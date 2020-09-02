@@ -226,7 +226,7 @@ engine.addSystem(new SaberSystem(sword, swordBase, swordLight))
 
 
 
-const socket = new WebSocket("wss://s.dapp-craft.com/"+pin);
+const socket = new WebSocket("wss://s.dapp-craft.com/scene/"+pin);
 
 socket.onmessage = function (event) {
   try {
