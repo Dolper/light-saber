@@ -187,7 +187,7 @@ engine.addEntity(qr)
 
 let pinEntity = new Entity()
 pinEntity.addComponent(new Transform({
-  position: new Vector3(8, 0.3, 14.9)
+  position: new Vector3(8, 0.5, 14.9)
 }))
 const myText = new TextShape("PIN:"+pin)
 myText.fontSize = 5
