@@ -145,8 +145,6 @@ if(this.isCanStart)
 
 
 
-const socket = new WebSocket("wss://quiz-services.dapp-craft.com/scene/test");
-
 let box = new Entity()
 box.addComponent(new Transform({
   position: new Vector3(8, 0, 8),
@@ -177,16 +175,32 @@ swordLight.addComponent(new Transform({
 swordLight.addComponent(new GLTFShape("swordLight.glb"))
 
 
+let pin = Tools.getRandomInt(0,10) + "" + Tools.getRandomInt(0,10) + "" + Tools.getRandomInt(0,10) + "" + Tools.getRandomInt(0,10)
+
 let qr = new Entity()
 qr.addComponent(new Transform({
   position: new Vector3(8, 0, 15),
   scale: new Vector3(3, 3, 3)
 }))
 qr.addComponent(new GLTFShape("qr.glb"))
-
 engine.addEntity(qr)
 
+let pinEntity = new Entity()
+pinEntity.addComponent(new Transform({
+  position: new Vector3(8, 0.3, 14.9)
+}))
+const myText = new TextShape("PIN:"+pin)
+myText.fontSize = 5
+myText.color = Color3.White()
+myText.font = new Font(Fonts.SanFrancisco)
+pinEntity.addComponent(myText)
+engine.addEntity(pinEntity)
+
 engine.addSystem(new SaberSystem(sword, swordBase, swordLight))
+
+
+
+const socket = new WebSocket("wss://quiz-services.dapp-craft.com/scene/"+pin);
 
 socket.onmessage = function (event) {
   try {
