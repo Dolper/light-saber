@@ -9,6 +9,46 @@ export class Tools {
 
 }
 
+
+export class SkyboxSystem implements ISystem {
+  private entity: Entity
+  private dt = 0
+  public constructor(entity: Entity) {
+    this.entity = entity
+  }
+  update(dt: number) {
+    this.dt += dt
+    if(this.dt>2)
+    {
+     // log("stop")
+      //this.entity.getComponent(AnimationState).pause()
+    }
+  }
+}
+
+
+
+
+let skyboxEntity = new Entity()
+
+skyboxEntity.addComponent(new GLTFShape("skybox.glb"))
+skyboxEntity.addComponent(new Transform({
+  position: new Vector3(8, -3, 8),
+  scale: new Vector3(1.8, 1.8, 1.8)
+}))
+let animator = new Animator()
+skyboxEntity.addComponent(animator)
+const skyboxClip = new AnimationState("anim30")
+animator.addClip(skyboxClip)
+skyboxClip.playing = true
+skyboxClip.looping = false
+skyboxClip.speed = 0.1
+engine.addEntity(skyboxEntity)
+engine.addSystem(new SkyboxSystem(skyboxEntity))
+
+
+
+
 export class SaberSystem implements ISystem {
 
   private dt = 0
@@ -60,27 +100,26 @@ export class SaberSystem implements ISystem {
 
   update(dt: number) {
     this.dt += dt
-this.timer += dt
+    this.timer += dt
 
-if(this.isCanStart)
-{
-  log(this.isCanStart)
-  if (this.swordLight.getComponent(Transform).scale.y <= 1)
-      this.swordLight.getComponent(Transform).scale.y += dt * 2
+    if (this.isCanStart) {
+      log(this.isCanStart)
+      if (this.swordLight.getComponent(Transform).scale.y <= 1)
+        this.swordLight.getComponent(Transform).scale.y += dt * 2
       else this.isCanStart = false
-}
+    }
 
     if (this.dt > 3) {
       if (!this.isStarted && this.isCanStart) {
-        
-        let sx = Math.round(this.sword.getComponent(Transform).rotation.x * 100) / 100
-          this.isCanStart = true
-          this.sourceStart.playing = true
-          this.sourceStart.loop = false
 
-          log("play once")
-          this.swordBase.addComponentOrReplace(this.sourceStart)
-          this.isStarted = true
+        let sx = Math.round(this.sword.getComponent(Transform).rotation.x * 100) / 100
+        this.isCanStart = true
+        this.sourceStart.playing = true
+        this.sourceStart.loop = false
+
+        log("play once")
+        this.swordBase.addComponentOrReplace(this.sourceStart)
+        this.isStarted = true
       }
     }
     if (this.dt > 4.5) {
@@ -127,8 +166,8 @@ if(this.isCanStart)
 
     if (this.timer > 0.5) {
 
-      if(this.lastX != x && this.dt > 3)
-      this.isCanStart = true
+      if (this.lastX != x && this.dt > 3)
+        this.isCanStart = true
 
       this.timer = 0
       this.lastX = x
@@ -174,12 +213,12 @@ swordBase.addComponent(
     sword.getComponent(Transform).scale = new Vector3(1, 1, 1)
     sword.setParent(Attachable.PLAYER)
   },
-      {
-          button: ActionButton.PRIMARY,
-          showFeedback: true,
-          hoverText: "TAKE ME",
-          distance: 8,
-      })
+    {
+      button: ActionButton.PRIMARY,
+      showFeedback: true,
+      hoverText: "TAKE ME",
+      distance: 8,
+    })
 )
 
 let swordLight = new Entity()
@@ -201,7 +240,7 @@ swordLight.addComponent(new GLTFShape("swordLight.glb"))
         uiImageD.vAlign = "bottom"
         uiImageD.visible = true*/
 
-let pin = Tools.getRandomInt(0,10) + "" + Tools.getRandomInt(0,10) + "" + Tools.getRandomInt(0,10) + "" + Tools.getRandomInt(0,10)
+let pin = Tools.getRandomInt(0, 10) + "" + Tools.getRandomInt(0, 10) + "" + Tools.getRandomInt(0, 10) + "" + Tools.getRandomInt(0, 10)
 
 let qr = new Entity()
 qr.addComponent(new Transform({
@@ -215,7 +254,7 @@ let pinEntity = new Entity()
 pinEntity.addComponent(new Transform({
   position: new Vector3(8, 0.5, 14.9)
 }))
-const myText = new TextShape("PIN:"+pin)
+const myText = new TextShape("PIN:" + pin)
 myText.fontSize = 5
 myText.color = Color3.White()
 myText.font = new Font(Fonts.SanFrancisco)
@@ -226,7 +265,7 @@ engine.addSystem(new SaberSystem(sword, swordBase, swordLight))
 
 
 
-const socket = new WebSocket("wss://s.dapp-craft.com/scene/"+pin);
+const socket = new WebSocket("wss://s.dapp-craft.com/scene/" + pin);
 
 socket.onmessage = function (event) {
   try {
