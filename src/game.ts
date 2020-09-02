@@ -156,8 +156,8 @@ engine.addEntity(box)
 
 let sword = new Entity()
 sword.addComponent(new Transform({
-  position: new Vector3(0.5, 0.5, 1),
-  scale: new Vector3(1, 1, 1)
+  position: new Vector3(8, 1.5, 8),
+  scale: new Vector3(2, 2, 2)
 }))
 
 let swordBase = new Entity()
@@ -166,6 +166,21 @@ swordBase.addComponent(new Transform({
   scale: new Vector3(1, 1, 1)
 }))
 swordBase.addComponent(new GLTFShape("swordBase.glb"))
+swordBase.addComponent(
+  new OnPointerDown(() => {
+    engine.addEntity(qr)
+    engine.addEntity(pinEntity)
+    sword.getComponent(Transform).position = new Vector3(0.5, 0.5, 1)
+    sword.getComponent(Transform).scale = new Vector3(1, 1, 1)
+    sword.setParent(Attachable.PLAYER)
+  },
+      {
+          button: ActionButton.PRIMARY,
+          showFeedback: true,
+          hoverText: "TAKE ME",
+          distance: 8,
+      })
+)
 
 let swordLight = new Entity()
 swordLight.addComponent(new Transform({
@@ -174,6 +189,17 @@ swordLight.addComponent(new Transform({
 }))
 swordLight.addComponent(new GLTFShape("swordLight.glb"))
 
+/*let canvas = new UICanvas()
+
+        let uiImageD = new UIImage(this.canvas, new Texture("textures/access-a.png"))
+        uiImageD.name = "clickable-image"
+        uiImageD.width = "500"
+        uiImageD.height = "70"
+        uiImageD.sourceWidth = 978
+        uiImageD.sourceHeight = 137
+        uiImageD.positionY = 10
+        uiImageD.vAlign = "bottom"
+        uiImageD.visible = true*/
 
 let pin = Tools.getRandomInt(0,10) + "" + Tools.getRandomInt(0,10) + "" + Tools.getRandomInt(0,10) + "" + Tools.getRandomInt(0,10)
 
@@ -183,7 +209,7 @@ qr.addComponent(new Transform({
   scale: new Vector3(3, 3, 3)
 }))
 qr.addComponent(new GLTFShape("qr.glb"))
-engine.addEntity(qr)
+
 
 let pinEntity = new Entity()
 pinEntity.addComponent(new Transform({
@@ -194,13 +220,13 @@ myText.fontSize = 5
 myText.color = Color3.White()
 myText.font = new Font(Fonts.SanFrancisco)
 pinEntity.addComponent(myText)
-engine.addEntity(pinEntity)
+
 
 engine.addSystem(new SaberSystem(sword, swordBase, swordLight))
 
 
 
-const socket = new WebSocket("wss://quiz-services.dapp-craft.com/scene/"+pin);
+const socket = new WebSocket("wss://s.dapp-craft.com/"+pin);
 
 socket.onmessage = function (event) {
   try {
@@ -217,8 +243,7 @@ swordBase.setParent(sword)
 swordLight.setParent(sword)
 
 engine.addEntity(sword)
-sword.setParent(Attachable.PLAYER)
-sword.setParent(Attachable.PLAYER)
+
 //entity.setParent(Attachable.AVATAR_POSITION)
 
 
