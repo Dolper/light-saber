@@ -3,23 +3,40 @@ import { PathData } from "./pathData"
 import { PatrolPath } from "./pathData"
 
 import utils from "../node_modules/decentraland-ecs-utils/index"
+import { Sword } from "./sword"
+import { Player } from "./player"
 
 export class Drone {
     path: Path3D
     public entity: Entity
-    constructor(path: Path3D) {
+    public isLive: boolean
+    private sword: Sword
+    constructor(path: Path3D, speed: number, sword: Sword, player: Player) {
+        this.isLive = true
+        this.sword = sword
         this.path = path
         this.entity = new Entity()
         this.entity.addComponent(new Transform({
             scale: new Vector3(2, 2, 2)
         }))
 
-        engine.addSystem(new PatrolPath(this.entity, this.path))
+        engine.addSystem(new PatrolPath(this.entity, this.path, speed))
         this.entity.addComponent(new GLTFShape("drone.glb"))
-      /*  this.entity.getComponent(GLTFShape).withCollisions = false
+        this.entity.addComponent(
+            new OnPointerDown(() => {
+               this.died()
+            },
+                {
+                    button: ActionButton.PRIMARY,
+                    showFeedback: true,
+                    hoverText: "SHOOT",
+                    distance: 14,
+                })
+        )
+       this.entity.getComponent(GLTFShape).withCollisions = false
 
         // create trigger area object, setting size and relative position
-        let triggerBox = new utils.TriggerBoxShape(new Vector3(1, 1, 1), Vector3.Zero())
+        let triggerBox = new utils.TriggerBoxShape(new Vector3(2, 2, 2), Vector3.Zero())
 
         //create trigger for entity
         this.entity.addComponent(
@@ -27,19 +44,30 @@ export class Drone {
                 triggerBox, //shape
                 2, //layer
                 1, //triggeredByLayer
+                null,
+                null,
                 () => {
                     //engine.removeEntity(this.entity)
-                    log("died")
-                    log(this.entity.getComponent(utils.TriggerComponent))
+                    player.damage()
                 }, //onTriggerEnter
-                null,
-                null,
-                null, true //onCameraExit
+                null, false //onCameraExit
             )
-        )*/
+        )
         this.entity.addComponent(new PathData(this.path))
         this.entity.addComponent(new Billboard())
         engine.addSystem(new DroneSystem(this.entity))
+        log("Dron added")
+    }
+
+    private died()
+    {
+        engine.removeEntity(this.entity)
+        this.isLive = false
+        let clip = new AudioClip("sfxFight.mp3")
+        let source = new AudioSource(clip)
+        source.playing = true
+        source.loop = false
+        this.sword.swordLight.addComponentOrReplace(source)
     }
 }
 

@@ -1,15 +1,11 @@
 import { Skybox } from "./skybox"
 import { Tools } from "./tools"
+import { LevelSystem } from "./LevelCotroller"
 import { Sword } from "./sword"
 import { DroneFactory } from "./droneFactory"
 import utils from "../node_modules/decentraland-ecs-utils/index"
 const camera = Camera.instance
-//let sb = new Skybox()
-
-
-
-
-
+let sb = new Skybox()
 
 
 
@@ -17,14 +13,14 @@ let pin = Tools.getRandomInt(0, 10) + "" + Tools.getRandomInt(0, 10) + "" + Tool
 
 let qrEntity = new Entity()
 qrEntity.addComponent(new Transform({
-  position: new Vector3(8, 0, 15),
+  position: new Vector3(16, 0, 20),
   scale: new Vector3(3, 3, 3)
 }))
 qrEntity.addComponent(new GLTFShape("qr.glb"))
 
 let pinEntity = new Entity()
 pinEntity.addComponent(new Transform({
-  position: new Vector3(8, 0.5, 14.9)
+  position: new Vector3(16, 0.5, 19.9)
 }))
 const myText = new TextShape("PIN:" + pin)
 myText.fontSize = 5
@@ -39,27 +35,21 @@ const socket = new WebSocket("wss://s.dapp-craft.com/scene/" + pin);
 socket.onmessage = function (event) {
   try {
     var parsed = JSON.parse(event.data)
-    if (parsed.x != null && parsed.y != null && parsed.z != null)
-      sword.entity.getComponent(Transform).rotation.setEuler(-(parsed.x - 80), -parsed.y, parsed.z)
+    log(parsed)
+    const swordRotation = sword.entity.getComponent(Transform).rotation
+    if (parsed.length == 4) {
+      swordRotation.x = -parsed[0]
+      swordRotation.y = parsed[1]
+      swordRotation.z = parsed[2]
+      swordRotation.w = parsed[3]
+    }
   } catch (error) {
     log(error);
   }
 };
 
+engine.addSystem(new LevelSystem(sword))
 
-
-
-let factory = new DroneFactory()
-for (let i = 0; i < 5; i++) {
-  const points = []
-  for (let j = 0; j < Tools.getRandomInt(2, 8); j++) {
-    points[j] = new Vector3(Tools.getRandomInt(1, 16), Tools.getRandomInt(0, 8), Tools.getRandomInt(1, 16))
-  }
-
-  points.push(camera.position)
-  const myPath = new Path3D(points)
-  factory.Add(myPath)
-}
 
 
 /*

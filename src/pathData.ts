@@ -16,17 +16,19 @@ export class PathData {
 export class PatrolPath implements ISystem {
     private entity: Entity
     private path: Path3D
-    public constructor(entity: Entity, path: Path3D)
+    private speed: number
+    public constructor(entity: Entity, path: Path3D, speed: number)
     {
         this.entity = entity
         this.path = path
+        this.speed = speed
     }
     update(dt: number) {
       let transform = this.entity.getComponent(Transform)
       let path = this.entity.getComponent(PathData)
       if (path.fraction < 1) {
         transform.position = Vector3.Lerp(path.origin, path.target, path.fraction)
-        path.fraction += dt / 3
+        path.fraction += (dt / 3) * (this.speed / 6)
       } else {
         path.nextPathIndex += 1
         if (path.nextPathIndex >= this.path.path.length) {

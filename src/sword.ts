@@ -16,7 +16,7 @@ export class Sword {
 
         this.entity = new Entity()
         this.entity.addComponent(new Transform({
-            position: new Vector3(8, 1.5, 8),
+            position: new Vector3(16, 1.5, 16),
             scale: new Vector3(2, 2, 2)
         }))
 
