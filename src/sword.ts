@@ -198,8 +198,16 @@ export class SaberSystem implements ISystem {
             let QSaber = this.sword.getComponent(Transform).rotation
             let QResult = QCamera.multiply(QSaber)
 
-            
+            //let PSword = this.globalSword.getComponent(Transform)
+           // this.globalSword.getComponent(Transform).position = new Vector3(PSword.position.x, PSword.position.y, PSword.position.z)
             this.globalSword.getComponent(Transform).rotation = QResult
+
+
+            let Dir = new Vector3(0,1,0).rotate(QResult)
+            log(Dir)
+            //this.globalSword2.getComponent(Transform).position = Dir
+
+            this.globalSword2.getComponent(Transform).position = Dir.add(this.globalSword.getComponent(Transform).position)
 
             // let ray: Ray = {
             //     origin: originPos,
@@ -217,7 +225,7 @@ export class SaberSystem implements ISystem {
             //     0
             // )
             //
-            this.globalSword.getComponent(Transform).position = ligthPos
+            this.globalSword.getComponent(Transform).position = new Vector3(ligthPos.x, ligthPos.y, ligthPos.z)  
             // this.globalSword.getComponent(Transform).rotation = ligthRot
 
             if (!this.isStarted && this.isCanStart) {
