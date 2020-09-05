@@ -1,56 +1,65 @@
 import { Tools } from "./tools"
-
+import "./entityExtension"
 const camera = Camera.instance
 
 import utils from "../node_modules/decentraland-ecs-utils/index"
 
-export class Sword {
+export class Sword extends Entity {
     private pinEntity: Entity
     private qrEntity: Entity
     public entity: Entity
     public swordLight: Entity
+    public swordRotation: Quaternion;
     constructor(qrEntity: Entity, pinEntity: Entity) {
+        super()
 
         this.qrEntity = qrEntity
         this.pinEntity = pinEntity
 
-        this.entity = new Entity()
-        this.entity.addComponent(new Transform({
-            position: new Vector3(16, 1.5, 16),
+        this.swordRotation = new Quaternion()
+        var baseSwordRotation = Quaternion.Euler(0,0,0)
+
+        this.addComponent(new Transform({
+            position: new Vector3(0.3, 0.5, 0.9),
+            // position: new Vector3(16, 1.5, 16),
+            rotation: this.swordRotation,
             scale: new Vector3(2, 2, 2)
         }))
 
         let swordBase = new Entity()
         swordBase.addComponent(new Transform({
             position: new Vector3(0, 0, 0),
+            rotation:baseSwordRotation,
             scale: new Vector3(1, 1, 1)
         }))
         swordBase.addComponent(new GLTFShape("swordBase.glb"))
-        swordBase.addComponent(
-            new OnPointerDown(() => {
-                engine.addEntity(this.qrEntity)
-                engine.addEntity(this.pinEntity)
-                this.entity.getComponent(Transform).position = new Vector3(0.3, 0.5, 0.9)
-                this.entity.getComponent(Transform).scale = new Vector3(1, 1, 1)
-                this.entity.setParent(Attachable.PLAYER)
-            },
-                {
-                    button: ActionButton.PRIMARY,
-                    showFeedback: true,
-                    hoverText: "TAKE ME",
-                    distance: 8,
-                })
-        )
-
 
         this.swordLight = new Entity()
         this.swordLight.addComponent(new Transform({
             position: new Vector3(0, 0, 0),
+            rotation:baseSwordRotation,
             scale: new Vector3(1, 0.02, 1)
         }))
         this.swordLight.addComponent(new GLTFShape("swordLight.glb"))
 
+        const swordLightTest = new Entity()
+        swordLightTest.addComponent(new BoxShape())
+        const mat = new Material()
+        mat.albedoColor = Color3.Green()
+        mat.metallic = 0.6
+        // mat.roughness = 0.1
+        swordLightTest.addComponent(mat)
+        swordLightTest.addComponent(new Transform({
+            // position: this.globalSwordPos,
+            // rotation: this.globalSwordRot,
+            scale: new Vector3(0.05, 1, 0.05)
+        }))
 
+        engine.addEntity(this)
+        swordBase.setParent(this)
+        this.swordLight.setParent(this)
+        swordLightTest.setParent(this.swordLight)
+        this.setParent(Attachable.AVATAR_POSITION)
 
 
         /*this.swordLight.getComponent(GLTFShape).withCollisions = false
@@ -74,11 +83,8 @@ export class Sword {
             )
         )
 */
-        swordBase.setParent(this.entity)
-        this.swordLight.setParent(this.entity)
 
-        engine.addEntity(this.entity)
-        engine.addSystem(new SaberSystem(this.entity, swordBase, this.swordLight))
+        engine.addSystem(new SaberSystem(this, swordBase, this.swordLight))
     }
 
     private killed() {
@@ -112,6 +118,9 @@ export class SaberSystem implements ISystem {
     private lastX = 0
     private lastY = 0
 
+    private globalSword: Entity
+    private globalSword2: Entity
+
     constructor(sword: Entity, swordBase: Entity, swordLight: Entity) {
         log("Saber system init")
         this.swordBase = swordBase
@@ -120,6 +129,20 @@ export class SaberSystem implements ISystem {
 
         this.sourcesFast = []
         this.clipsFast = []
+
+        this.globalSword = new Entity()
+        this.globalSword.addComponent(new BoxShape())
+        this.globalSword.addComponent(new Transform({
+            scale: new Vector3(0.1, 0.1, 0.1)
+        }))
+        this.globalSword2 = new Entity()
+        this.globalSword2.addComponent(new SphereShape())
+        this.globalSword2.addComponent(new Transform({
+            scale: new Vector3(0.1, 0.1, 0.1)
+        }))
+
+        engine.addEntity(this.globalSword)
+        engine.addEntity(this.globalSword2)
 
         this.clipStart = new AudioClip("sfxStart.mp3")
         this.sourceStart = new AudioSource(this.clipStart)
@@ -153,6 +176,41 @@ export class SaberSystem implements ISystem {
             else this.isCanStart = false
         }
         if (this.dt > 3) {
+            let camRotation = camera.rotation.clone()
+            camRotation.x = 0
+            camRotation.z = 0
+            let ligthPos = this.swordLight.getGlobalPosition()
+            ligthPos = camera.position.add(ligthPos.rotate(camRotation))
+            let ligthRot = this.swordLight.getGlobalRotation()
+            ligthRot = camRotation.multiply(ligthRot)
+            // log('swordLight', ligthPos.x, ligthPos.y, ligthPos.z, ligthRot.asArray())
+
+            let originPos = ligthPos.clone()
+            ligthPos = ligthPos.add(new Vector3(0.0, -1.0, 0.0))
+            let direction = originPos.rotate(ligthRot).normalize()
+
+            // this.globalSword.getComponent(Transform).position = originPos
+            this.globalSword2.getComponent(Transform).position = ligthPos.clone().add(direction)
+
+            // let ray: Ray = {
+            //     origin: originPos,
+            //     direction: direction,
+            //     distance: 10,
+            // }
+            //
+            // physicsCast.hitAll(
+            //     ray,
+            //     (e) => {
+            //         for (let entityHit of e.entities) {
+            //             log(entityHit.entity.entityId)
+            //         }
+            //     },
+            //     0
+            // )
+            //
+            this.globalSword.getComponent(Transform).position = ligthPos
+            // this.globalSword.getComponent(Transform).rotation = ligthRot
+
             if (!this.isStarted && this.isCanStart) {
 
                 let sx = Math.round(this.sword.getComponent(Transform).rotation.x * 100) / 100

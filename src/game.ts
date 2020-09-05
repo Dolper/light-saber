@@ -5,12 +5,12 @@ import { Sword } from "./sword"
 import { DroneFactory } from "./droneFactory"
 import utils from "../node_modules/decentraland-ecs-utils/index"
 const camera = Camera.instance
-let sb = new Skybox()
+// let sb = new Skybox()
 
 
 
 let pin = Tools.getRandomInt(0, 10) + "" + Tools.getRandomInt(0, 10) + "" + Tools.getRandomInt(0, 10) + "" + Tools.getRandomInt(0, 10)
-
+pin = '0001'
 let qrEntity = new Entity()
 qrEntity.addComponent(new Transform({
   position: new Vector3(16, 0, 20),
@@ -28,20 +28,20 @@ myText.color = Color3.White()
 myText.font = new Font(Fonts.SanFrancisco)
 pinEntity.addComponent(myText)
 
+engine.addEntity(qrEntity)
+engine.addEntity(pinEntity)
 let sword = new Sword(qrEntity, pinEntity)
 
 const socket = new WebSocket("wss://s.dapp-craft.com/scene/" + pin);
-
 socket.onmessage = function (event) {
   try {
     var parsed = JSON.parse(event.data)
-    log(parsed)
-    const swordRotation = sword.entity.getComponent(Transform).rotation
+    // log(parsed)
     if (parsed.length == 4) {
-      swordRotation.x = -parsed[0]
-      swordRotation.y = parsed[1]
-      swordRotation.z = parsed[2]
-      swordRotation.w = parsed[3]
+      sword.swordRotation.x = -parsed[0]
+      sword.swordRotation.y = parsed[1]
+      sword.swordRotation.z = parsed[2]
+      sword.swordRotation.w = parsed[3]
     }
   } catch (error) {
     log(error);
