@@ -3,10 +3,12 @@ export class Player {
     private text
     private uiImageA
     private canvas: UICanvas
+    private damageSystem
     constructor() {
         this.health = 100
         this.canvas = new UICanvas()
-
+        this.damageSystem = new DamageSystem(this.canvas)
+        engine.addSystem(this.damageSystem)
         // Create a textShape component, setting the canvas as parent
         this.text = new UIText(this.canvas)
         this.text.value = this.health + " HP"
@@ -19,18 +21,111 @@ export class Player {
     public damage() {
         this.health -= 5
         this.text.value = this.health + " HP"
+        this.damageSystem.isDamage = true
+        if (this.health == 0) {
+            let bg = new UIImage(this.canvas, new Texture("bgRed.png"))
+            bg.width = "100%"
+            bg.height = "100%"
+            bg.sourceWidth = 1
+            bg.sourceHeight = 1
+            bg.positionY = 0
+            bg.vAlign = "bottom"
+            bg.visible = true
 
-        if(this.health == 0)
-        {
-            this.uiImageA = new UIImage(this.canvas, new Texture("gameover.png"))
-            this.uiImageA.width = "800"
-            this.uiImageA.height = "560"
-            this.uiImageA.sourceWidth = 504
-            this.uiImageA.sourceHeight = 367
-            this.uiImageA.positionY = 200
-            this.uiImageA.vAlign = "top"
+            let uiImageGO = new UIImage(this.canvas, new Texture("gameover.png"))
+            uiImageGO.width = "462"
+            uiImageGO.height = "117"
+            uiImageGO.sourceWidth = 462
+            uiImageGO.sourceHeight = 117
+            uiImageGO.positionY = 400
+            uiImageGO.vAlign = "bottom"
+            uiImageGO.visible = true
+
+            this.uiImageA = new UIImage(this.canvas, new Texture("playagain.png"))
+            this.uiImageA.width = "294"
+            this.uiImageA.height = "89"
+            this.uiImageA.sourceWidth = 294
+            this.uiImageA.sourceHeight = 89
+            this.uiImageA.positionY = 230
+            this.uiImageA.vAlign = "bottom"
             this.uiImageA.visible = true
+        }
+        if (this.health < 0) this.text.value = "GAME OVER"
+    }
+}
 
+
+export class DamageSystem implements ISystem {
+    private dt = 0
+    public isDamage = false
+    private canvas: UICanvas
+    private uiArrowDown: UIImage
+    private uiArrowTop: UIImage
+    private uiArrowRight: UIImage
+    private uiArrowLeft: UIImage
+    private isCountDown = false
+
+    public constructor(canvas: UICanvas) {
+        this.canvas = canvas
+        this.uiArrowDown = new UIImage(this.canvas, new Texture("Adown.png"))
+        this.uiArrowDown.width = "267"
+        this.uiArrowDown.height = "104"
+        this.uiArrowDown.sourceWidth = 533
+        this.uiArrowDown.sourceHeight = 208
+        this.uiArrowDown.positionY = 10
+        this.uiArrowDown.vAlign = "bottom"
+        this.uiArrowDown.visible = false
+
+        this.uiArrowTop = new UIImage(this.canvas, new Texture("Atop.png"))
+        this.uiArrowTop.width = "267"
+        this.uiArrowTop.height = "104"
+        this.uiArrowTop.sourceWidth = 533
+        this.uiArrowTop.sourceHeight = 208
+        this.uiArrowTop.positionY = 10
+        this.uiArrowTop.vAlign = "top"
+        this.uiArrowTop.visible = false
+
+        this.uiArrowLeft = new UIImage(this.canvas, new Texture("Aleft.png"))
+        this.uiArrowLeft.width = "104"
+        this.uiArrowLeft.height = "267"
+        this.uiArrowLeft.sourceWidth = 208
+        this.uiArrowLeft.sourceHeight = 533
+        this.uiArrowLeft.positionX = 10
+        this.uiArrowLeft.hAlign = "left"
+        this.uiArrowLeft.visible = false
+
+        this.uiArrowRight = new UIImage(this.canvas, new Texture("Aright.png"))
+        this.uiArrowRight.width = "104"
+        this.uiArrowRight.height = "267"
+        this.uiArrowRight.sourceWidth = 208
+        this.uiArrowRight.sourceHeight = 533
+        this.uiArrowRight.positionX = -10
+        this.uiArrowRight.hAlign = "right"
+        this.uiArrowRight.visible = false
+    }
+
+    update(dt: number) {
+        if (this.isDamage) {
+            this.uiArrowDown.visible = true
+            this.uiArrowTop.visible = true
+            this.uiArrowRight.visible = true
+            this.uiArrowLeft.visible = true
+            this.isDamage = false
+            this.isCountDown = true
+            
+        }
+
+        if (this.isCountDown) {
+            this.dt += dt
+        }
+
+        if (this.dt > 0.5) {
+            this.uiArrowDown.visible = false
+            this.uiArrowTop.visible = false
+            this.uiArrowRight.visible = false
+            this.uiArrowLeft.visible = false
+            this.isCountDown = false
+            this.dt = 0
         }
     }
 }

@@ -38,11 +38,13 @@ socket.onmessage = function (event) {
     log(parsed)
     const swordRotation = sword.entity.getComponent(Transform).rotation
     if (parsed.length == 4) {
-      swordRotation.x = -parsed[0]
-      swordRotation.y = parsed[1]
-      swordRotation.z = parsed[2]
-      swordRotation.w = parsed[3]
+    let Q = new Quaternion(parsed[0],parsed[1],-parsed[2],-parsed[3])
+    let E = Q.eulerAngles
+    let Q2 = Quaternion.Euler(E.x+90, E.y, E.z)
+  
+    sword.entity.getComponent(Transform).rotation = Q2
     }
+
   } catch (error) {
     log(error);
   }
