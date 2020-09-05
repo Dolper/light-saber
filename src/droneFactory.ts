@@ -8,6 +8,15 @@ export class DroneFactory {
 
     constructor(levelHandler) {
         this.levelHandler = levelHandler
+
+        // very long loading model
+        const explosion = new Entity()
+        explosion.addComponent(this.explosionShape)
+        explosion.addComponent(new Transform({
+            position: new Vector3(0,19,0),
+            scale: new Vector3(0.001, 0.001, 0.001)
+        }))
+        engine.addEntity(explosion)
     }
 
     private droneHandler(event: any) {
