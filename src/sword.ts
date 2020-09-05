@@ -172,12 +172,9 @@ export class SaberSystem implements ISystem {
             else this.isCanStart = false
         }
         if (this.dt > 3) {
-            // let camRotation = camera.rotation.clone()
-            // const E = Q.eulerAngles
-            const camRotation = Quaternion.Euler(0, camera.rotation.eulerAngles.y, 0)
-
-            // camRotation.x = 0
-            // camRotation.z = 0
+            let camRotation = camera.rotation.clone()
+            camRotation.x = 0
+            camRotation.z = 0
             let ligthPos = this.swordLight.getGlobalPosition()
             ligthPos = camera.position.add(ligthPos.rotate(camRotation))
             let ligthRot = this.swordLight.getGlobalRotation()
@@ -186,10 +183,10 @@ export class SaberSystem implements ISystem {
 
             let originPos = ligthPos.clone()
             ligthPos = ligthPos.add(new Vector3(0.0, -1.0, 0.0))
-            // let direction = originPos.rotate(ligthRot).normalize()
+            let direction = originPos.rotate(ligthRot).normalize()
 
             // this.globalSword.getComponent(Transform).position = originPos
-            // this.globalSword2.getComponent(Transform).position = ligthPos.clone().add(direction)
+            this.globalSword2.getComponent(Transform).position = ligthPos.clone().add(direction)
 
             // let ray: Ray = {
             //     origin: originPos,
