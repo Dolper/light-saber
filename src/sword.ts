@@ -165,10 +165,6 @@ export class SaberSystem implements ISystem {
         this.dt += dt
         this.timer += dt
 
-
-
-
-
         if (this.isCanStart) {
             //log(this.isCanStart)
             if (this.swordLight.getComponent(Transform).scale.y <= 1)

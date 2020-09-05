@@ -28,7 +28,7 @@ export class LevelContoller {
         log("nextLevel")
         for (let i = 0; i < this.currentLevel; i++) {
             const points = []
-            for (let j = 0; j < Tools.getRandomInt(2, 8); j++) {
+            for (let j = 0; j < Tools.getRandomInt(3, 7+(this.currentLevel*2)); j++) {
                 points[j] = new Vector3(Tools.getRandomInt(3, 29), Tools.getRandomInt(0, 12), Tools.getRandomInt(3, 29))
             }
 
