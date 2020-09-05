@@ -9,6 +9,7 @@ export class Sword {
     private qrEntity: Entity
     public entity: Entity
     public swordLight: Entity
+    public swordBase: Entity
     constructor(qrEntity: Entity, pinEntity: Entity) {
 
         this.qrEntity = qrEntity
@@ -20,13 +21,13 @@ export class Sword {
             scale: new Vector3(2, 2, 2)
         }))
 
-        let swordBase = new Entity()
-        swordBase.addComponent(new Transform({
+        this.swordBase = new Entity()
+        this.swordBase.addComponent(new Transform({
             position: new Vector3(0, 0, 0),
             scale: new Vector3(1, 1, 1)
         }))
-        swordBase.addComponent(new GLTFShape("swordBase.glb"))
-        swordBase.addComponent(
+        this.swordBase.addComponent(new GLTFShape("swordBase.glb"))
+        this.swordBase.addComponent(
             new OnPointerDown(() => {
                 engine.addEntity(this.qrEntity)
                 engine.addEntity(this.pinEntity)
@@ -74,11 +75,11 @@ export class Sword {
             )
         )
 */
-        swordBase.setParent(this.entity)
+        this.swordBase.setParent(this.entity)
         this.swordLight.setParent(this.entity)
 
         engine.addEntity(this.entity)
-        engine.addSystem(new SaberSystem(this.entity, swordBase, this.swordLight))
+        engine.addSystem(new SaberSystem(this.entity, this.swordBase, this.swordLight))
     }
 
     private killed() {
@@ -120,6 +121,13 @@ export class SaberSystem implements ISystem {
 
         this.sourcesFast = []
         this.clipsFast = []
+
+        let music = new AudioClip("sound.mp3")
+        let sourceMusic = new AudioSource(music)
+        sourceMusic.playing = true
+        sourceMusic.loop = true
+        this.sword.addComponentOrReplace(sourceMusic)
+
 
         this.clipStart = new AudioClip("sfxStart.mp3")
         this.sourceStart = new AudioSource(this.clipStart)
@@ -165,7 +173,7 @@ export class SaberSystem implements ISystem {
             if (!this.isPlaying) {
                 this.sourceSlow.playing = true
                 this.sourceSlow.loop = true
-                this.sourceSlow.volume = 1
+                this.sourceSlow.volume = 0.2
 
                 log("playing")
                 this.swordLight.addComponent(this.sourceSlow)
@@ -181,6 +189,7 @@ export class SaberSystem implements ISystem {
             !this.isFastPlaying) {
             let rnd = Tools.getRandomInt(0, 3)
             this.sourcesFast[rnd].playOnce()
+            this.sourcesFast[rnd].volume = 0.5
 
             //log("playing FAST:", rnd)
             this.swordBase.addComponentOrReplace(this.sourcesFast[rnd])

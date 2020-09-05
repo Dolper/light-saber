@@ -9,6 +9,7 @@ export class DroneFactory {
     private sword: Sword
     public drones = []
     private player: Player
+    private score: number = 0
     constructor(sword: Sword, player: Player) {
         this.sword = sword
         this.player = player
@@ -25,12 +26,23 @@ export class DroneFactory {
     }
 
     public Add(path: Path3D, speed: number) {
-        let drone = new Drone(path, speed, this.sword, this.player)
+        let drone = new Drone(path, speed, this.sword, this.player, this.Score)
         this.drones.push(drone)
         engine.addEntity(drone.entity)
     }
 
-    public Remove() {
+    public Reset() {
+        this.drones.forEach(dron => {
+            engine.removeEntity(dron.entity)
+        });
+    }
 
+    public Score(value: number)
+    {
+        //log(this.score + "FAC")
+        //this.score += value
+        //log("factory: + " + value)
+        //log("factory: " + this.score.toString())
+        return 0
     }
 }

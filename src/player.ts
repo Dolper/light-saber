@@ -1,10 +1,17 @@
+import { LevelContoller } from "./LevelCotroller"
+
 export class Player {
     public health
     private text
-    private uiImageA
+    private uiPlayAgain: UIImage
+    private uiBackGround: UIImage
+    private uiGameOver: UIImage
     private canvas: UICanvas
     private damageSystem
-    constructor() {
+    private levelContoller: LevelContoller
+
+    constructor(levelController: LevelContoller) {
+        this.levelContoller = levelController
         this.health = 100
         this.canvas = new UICanvas()
         this.damageSystem = new DamageSystem(this.canvas)
@@ -13,7 +20,6 @@ export class Player {
         this.text = new UIText(this.canvas)
         this.text.value = this.health + " HP"
         this.text.fontSize = 15
-
         this.text.positionY = 20
         this.text.vAlign = "bottom"
     }
@@ -23,34 +29,47 @@ export class Player {
         this.text.value = this.health + " HP"
         this.damageSystem.isDamage = true
         if (this.health == 0) {
-            let bg = new UIImage(this.canvas, new Texture("bgRed.png"))
-            bg.width = "100%"
-            bg.height = "100%"
-            bg.sourceWidth = 1
-            bg.sourceHeight = 1
-            bg.positionY = 0
-            bg.vAlign = "bottom"
-            bg.visible = true
+            this.uiBackGround = new UIImage(this.canvas, new Texture("bgRed.png"))
+            this.uiBackGround.width = "100%"
+            this.uiBackGround.height = "100%"
+            this.uiBackGround.sourceWidth = 1
+            this.uiBackGround.sourceHeight = 1
+            this.uiBackGround.positionY = 0
+            this.uiBackGround.vAlign = "bottom"
+            this.uiBackGround.visible = true
 
-            let uiImageGO = new UIImage(this.canvas, new Texture("gameover.png"))
-            uiImageGO.width = "462"
-            uiImageGO.height = "117"
-            uiImageGO.sourceWidth = 462
-            uiImageGO.sourceHeight = 117
-            uiImageGO.positionY = 400
-            uiImageGO.vAlign = "bottom"
-            uiImageGO.visible = true
+            this.uiGameOver = new UIImage(this.canvas, new Texture("gameover.png"))
+            this.uiGameOver.width = "462"
+            this.uiGameOver.height = "117"
+            this.uiGameOver.sourceWidth = 462
+            this.uiGameOver.sourceHeight = 117
+            this.uiGameOver.positionY = 400
+            this.uiGameOver.vAlign = "bottom"
+            this.uiGameOver.visible = true
 
-            this.uiImageA = new UIImage(this.canvas, new Texture("playagain.png"))
-            this.uiImageA.width = "294"
-            this.uiImageA.height = "89"
-            this.uiImageA.sourceWidth = 294
-            this.uiImageA.sourceHeight = 89
-            this.uiImageA.positionY = 230
-            this.uiImageA.vAlign = "bottom"
-            this.uiImageA.visible = true
+            this.uiPlayAgain = new UIImage(this.canvas, new Texture("playagain.png"))
+            this.uiPlayAgain.width = "294"
+            this.uiPlayAgain.height = "89"
+            this.uiPlayAgain.sourceWidth = 294
+            this.uiPlayAgain.sourceHeight = 89
+            this.uiPlayAgain.positionY = 230
+            this.uiPlayAgain.vAlign = "bottom"
+            this.uiPlayAgain.visible = true
+            this.uiPlayAgain.onClick = new OnClick(() => {
+                this.reset()
+            })
         }
         if (this.health < 0) this.text.value = "GAME OVER"
+    }
+
+    private reset() {
+        this.levelContoller.reset()
+        this.health = 100
+        log("PLAY AGAIN")
+        this.text.value = this.health + " HP"
+        this.uiPlayAgain.visible = false
+        this.uiGameOver.visible = false
+        this.uiBackGround.visible = false
     }
 }
 
@@ -112,7 +131,7 @@ export class DamageSystem implements ISystem {
             this.uiArrowLeft.visible = true
             this.isDamage = false
             this.isCountDown = true
-            
+
         }
 
         if (this.isCountDown) {

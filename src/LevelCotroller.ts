@@ -5,13 +5,20 @@ import { Sword } from "./sword"
 import { Player } from "./player"
 const camera = Camera.instance
 
+
 export class LevelContoller {
     private currentLevel = 1
     private factory: DroneFactory
     private player: Player
+    private sword: Sword
+    public score: number
+
     constructor(sword: any) {
-        this.player = new Player()
-        this.factory = new DroneFactory(sword, this.player)
+        this.player = new Player(this)
+        this.sword = sword
+        this.factory = new DroneFactory(this.sword, this.player)
+        this.score = this.factory.Score(0)
+        log(this.score.toString() + "Score level controller")
     }
 
     public CheckFactory() {
@@ -37,6 +44,13 @@ export class LevelContoller {
             this.factory.Add(myPath, this.currentLevel)
         }
         this.currentLevel += 1
+    }
+
+    public reset()
+    {
+        this.currentLevel = 1
+        this.factory.Reset()
+        this.nextLevel()
     }
 }
 

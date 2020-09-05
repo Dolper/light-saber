@@ -13,7 +13,9 @@ export class Drone {
     private sword: Sword
     private explosion: Entity
     private PatrolPath: PatrolPath
-    constructor(path: Path3D, speed: number, sword: Sword, player: Player) {
+    private Score: Function
+    constructor(path: Path3D, speed: number, sword: Sword, player: Player, Score: Function) {
+        this.Score = Score
         this.isLive = true
         this.sword = sword
         this.path = path
@@ -65,14 +67,12 @@ export class Drone {
     }
 
     private died() {
-
-        this.entity.getComponent(Transform).scale = new Vector3(0.2, 0.2, 0.2)
-        this.isLive = false
         let clip = new AudioClip("sfxFight.mp3")
         let source = new AudioSource(clip)
         source.playing = true
         source.loop = false
-        this.sword.swordLight.addComponentOrReplace(source)
+        source.volume = 0.5
+        this.sword.swordBase.addComponentOrReplace(source)
 
         let dronPosition = this.entity.getComponent(Transform).position
         this.explosion = new Entity()
@@ -81,10 +81,14 @@ export class Drone {
             scale: new Vector3(0.02, 0.02, 0.02)
         }))
         this.explosion.addComponent(new GLTFShape("bang.glb"))
+        
+        this.isLive = false
         engine.addEntity(this.explosion)
-
         engine.addSystem(new DroneSystem(this.entity, this.explosion))
-
+        this.entity.getComponent(Transform).scale = new Vector3(0.01, 0.01, 0.01)
+        this.entity.getComponent(Transform).position = new Vector3(16, 15, 16)
+        engine.removeSystem(this.PatrolPath)
+        this.Score(1)
     }
 }
 
@@ -99,7 +103,6 @@ export class DroneSystem implements ISystem {
     public constructor(entity: Entity, explosion: Entity) {
         this.entity = entity
         this.explosion = explosion
-        this.entity.getComponent(Transform).position = new Vector3(16, 15, 16)
     }
     update(dt: number) {
         this.dt += dt

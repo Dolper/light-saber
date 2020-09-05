@@ -13,6 +13,13 @@ export class Skybox {
         engine.addEntity(light)
 
 
+        let clip = new AudioClip("sound.mp3")
+        let source = new AudioSource(clip)
+        source.playing = true
+        source.loop = true
+        light.addComponentOrReplace(source)
+
+
         let skyboxEntity = new Entity()
 
         skyboxEntity.addComponent(new GLTFShape("skybox.glb"))
