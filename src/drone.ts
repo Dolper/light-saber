@@ -65,8 +65,7 @@ export class Drone {
     }
 
     private died() {
-
-        this.entity.getComponent(Transform).scale = new Vector3(0.2, 0.2, 0.2)
+        this.entity.getComponent(GLTFShape).visible = false
         this.isLive = false
         let clip = new AudioClip("sfxFight.mp3")
         let source = new AudioSource(clip)
@@ -83,8 +82,10 @@ export class Drone {
         this.explosion.addComponent(new GLTFShape("bang.glb"))
         engine.addEntity(this.explosion)
 
-        engine.addSystem(new DroneSystem(this.entity, this.explosion))
+        this.entity.getComponent(Transform).position = new Vector3(8, 10, 8)
 
+
+        engine.addSystem(new DroneSystem(this.entity, this.explosion))
     }
 }
 
@@ -106,6 +107,7 @@ export class DroneSystem implements ISystem {
         if (!this.isExployed) {
             if (this.dt > 1) {
                 if (!this.isDied) {
+                    this.entity.removeComponent(utils.TriggerComponent)
                     engine.removeEntity(this.entity)
                     this.isDied = true
                 }
