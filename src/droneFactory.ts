@@ -1,48 +1,62 @@
-
-const camera = Camera.instance
-import { Drone } from "./drone"
-import { Sword } from "./sword"
-import { Player } from "./player"
-
+import {Drone} from "./drone"
 
 export class DroneFactory {
-    private sword: Sword
-    public drones = []
-    private player: Player
-    private score: number = 0
-    constructor(sword: Sword, player: Player) {
-        this.sword = sword
-        this.player = player
-        log(this.sword)
+    public drones: Drone[] = []
+    private explosions = []
+    private levelHandler
+    private explosionShape = new GLTFShape("bang.glb")
 
-        let explosion = new Entity()
-        explosion.addComponent(new Transform({
-            position: new Vector3(16,16,16),
-            scale: new Vector3(0.001, 0.001, 0.001)
-        }))
-        explosion.addComponent(new GLTFShape("bang.glb"))
-        engine.addEntity(explosion)
+    constructor(levelHandler) {
+        this.levelHandler = levelHandler
+    }
 
+    private droneHandler(event: any) {
+        log('DroneFactory', event.event, event.pos)
+        if (event.event == 'kill' || event.event == 'smashPlayer') {
+            const explosion = new Entity()
+            explosion.addComponent(this.explosionShape)
+            explosion.addComponent(new Transform({
+                position: event.pos,
+                scale: new Vector3(0.02, 0.02, 0.02)
+            }))
+            engine.addEntity(explosion)
+            this.explosions.push({dt: 0, explosion: explosion, drone: event.drone})
+        }
+        this.levelHandler(event)
     }
 
     public Add(path: Path3D, speed: number) {
-        let drone = new Drone(path, speed, this.sword, this.player, this.Score)
+        let drone = new Drone(path, speed, (event) => this.droneHandler(event))
         this.drones.push(drone)
-        engine.addEntity(drone.entity)
+        this.levelHandler({
+            event: 'new',
+            drone: drone
+        })
+        return drone
     }
 
     public Reset() {
         this.drones.forEach(dron => {
-            engine.removeEntity(dron.entity)
+            engine.removeEntity(dron)
         });
     }
 
-    public Score(value: number)
-    {
-        //log(this.score + "FAC")
-        //this.score += value
-        //log("factory: + " + value)
-        //log("factory: " + this.score.toString())
-        return 0
+    public updateDrones(dt) {
+        for (let i = 0; i < this.explosions.length; i++) {
+            const ex = this.explosions[i]
+            ex.dt += dt
+            if (ex.dt > 3 && ex.explosion != null) {
+                engine.removeEntity(ex.explosion)
+                ex.explosion = null
+                this.explosions.splice(i, 1);
+                log('remove explosion')
+                break;
+            }
+            if (ex.dt > 1 && ex.drone != null) {
+                engine.removeEntity(ex.drone)
+                log('remove drone')
+                ex.drone = null
+            }
+        }
     }
 }

@@ -14,6 +14,7 @@
     "decentraland-ecs": "latest"
   },
   "dependencies": {
+    "@dcl/ui-utils": "^1.2.1",
     "decentraland-ecs-utils": "^1.1.4",
     "qrcode-generator-ts": "0.0.4"
   }

@@ -2,7 +2,6 @@ import { Skybox } from "./skybox"
 import { Tools } from "./tools"
 import { LevelSystem } from "./LevelCotroller"
 import { Sword } from "./sword"
-import { DroneFactory } from "./droneFactory"
 import utils from "../node_modules/decentraland-ecs-utils/index"
 const camera = Camera.instance
 let sb = new Skybox()
@@ -10,7 +9,7 @@ let sb = new Skybox()
 
 
 let pin = Tools.getRandomInt(0, 10) + "" + Tools.getRandomInt(0, 10) + "" + Tools.getRandomInt(0, 10) + "" + Tools.getRandomInt(0, 10)
-
+// pin='0003'
 let qrEntity = new Entity()
 qrEntity.addComponent(new Transform({
   position: new Vector3(16, 0, 20),
@@ -50,7 +49,7 @@ socket.onmessage = function (event) {
   }
 };
 
-engine.addSystem(new LevelSystem(sword))
+engine.addSystem(new LevelSystem())
 
 
 
