@@ -7,10 +7,12 @@ import {BarStyles} from '../node_modules/@dcl/ui-utils/utils/types'
 const camera = Camera.instance
 
 export class LevelContoller {
-    private currentLevel = 1
     private gameOver = false
     public factory: DroneFactory
     public playerUI: PlayerUI
+
+    level = new ui.UICounter(0, -100, 150)
+    levelLabel = new ui.CornerLabel('Level:', -170, 150)
 
     score = new ui.UICounter(0, -100, 100)
     scoreLabel = new ui.CornerLabel('Score:', -170, 100)
@@ -49,23 +51,24 @@ export class LevelContoller {
 
     public nextLevel() {
         log("nextLevel")
-        for (let i = 0; i < this.currentLevel; i++) {
+        this.level.increase(1)
+        const currentLevel = this.level.read()
+        for (let i = 0; i < currentLevel; i++) {
             const points = []
-            for (let j = 0; j < Tools.getRandomInt(3, 7 + (this.currentLevel * 2)); j++) {
+            for (let j = 0; j < Tools.getRandomInt(3, 7 + (currentLevel * 2)); j++) {
                 points[j] = new Vector3(Tools.getRandomInt(3, 29), Tools.getRandomInt(0, 12), Tools.getRandomInt(3, 29))
             }
 
             points.push(camera.position)
             const myPath = new Path3D(points)
-            this.factory.Add(myPath, this.currentLevel)
+            this.factory.Add(myPath, currentLevel)
         }
-        this.currentLevel += 1
     }
 
     public reset() {
         this.health.set(1)
         this.score.set(0)
-        this.currentLevel = 1
+        this.level.set(0)
         this.factory.Reset()
         this.gameOver = false
         this.nextLevel()
