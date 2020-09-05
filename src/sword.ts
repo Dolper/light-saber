@@ -59,7 +59,7 @@ export class Sword extends Entity {
         swordBase.setParent(this)
         this.swordLight.setParent(this)
         swordLightTest.setParent(this.swordLight)
-        this.setParent(Attachable.AVATAR_POSITION)
+        this.setParent(Attachable.PLAYER)
 
 
         /*this.swordLight.getComponent(GLTFShape).withCollisions = false
@@ -133,8 +133,9 @@ export class SaberSystem implements ISystem {
         this.globalSword = new Entity()
         this.globalSword.addComponent(new BoxShape())
         this.globalSword.addComponent(new Transform({
-            scale: new Vector3(0.1, 0.1, 0.1)
+            scale: new Vector3(0.1, 3.1, 0.1)
         }))
+        this.globalSword.getComponent(BoxShape).withCollisions = false
         this.globalSword2 = new Entity()
         this.globalSword2.addComponent(new SphereShape())
         this.globalSword2.addComponent(new Transform({
@@ -186,7 +187,19 @@ export class SaberSystem implements ISystem {
             let direction = originPos.rotate(ligthRot).normalize()
 
             // this.globalSword.getComponent(Transform).position = originPos
-            this.globalSword2.getComponent(Transform).position = ligthPos.clone().add(direction)
+            //this.globalSword2.getComponent(Transform).position = ligthPos.clone().add(direction)
+
+
+
+            this.globalSword2.getComponent(Transform).position = this.globalSword.getComponent(Transform).position
+
+
+            let QCamera = camera.rotation
+            let QSaber = this.sword.getComponent(Transform).rotation
+            let QResult = QCamera.multiply(QSaber)
+
+            
+            this.globalSword.getComponent(Transform).rotation = QResult
 
             // let ray: Ray = {
             //     origin: originPos,

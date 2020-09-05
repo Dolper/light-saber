@@ -6,7 +6,7 @@ import { Player } from "./player"
 const camera = Camera.instance
 
 export class LevelContoller {
-    private currentLevel = 10
+    private currentLevel = 1
     private factory: DroneFactory
     private player: Player
     constructor(sword: any) {
