@@ -12,7 +12,7 @@ export class Sword {
     public qrPopup: UIImage
     public canvas: UICanvas = new UICanvas()
 
-    constructor(pin: number) {
+    constructor(pin: string) {
         this.qrPopup = new UIImage(this.canvas, new Texture("qrPopup.png"))
         this.qrPopup.width = "271"
         this.qrPopup.height = "303"
@@ -25,7 +25,7 @@ export class Sword {
         this.qrPopup.visible = false
 
         this.uiPin = new UIText(this.canvas)
-        this.uiPin.value = "PIN: " + pin.toString()
+        this.uiPin.value = "PIN: " + pin
         this.uiPin.color = Color4.Red()
         this.uiPin.fontSize = 20
         this.uiPin.width = 120
