@@ -11,6 +11,7 @@ export class Drone extends Entity {
     public isExployed = false
     private PatrolPath: PatrolPath
     private handler
+    private rayTrigger: Entity;
 
     constructor(path: Path3D, speed: number, handler) {
         super()
@@ -18,6 +19,7 @@ export class Drone extends Entity {
         this.isLive = true
         this.path = path
         this.addComponent(new Transform({
+            // position: path.path[0],
             scale: new Vector3(2, 2, 2)
         }))
 
@@ -41,6 +43,14 @@ export class Drone extends Entity {
 
         // create trigger area object, setting size and relative position
         let triggerBox = new utils.TriggerBoxShape(new Vector3(2, 2, 2), Vector3.Zero())
+
+        this.rayTrigger = new Entity("droneRayTrigger")
+        this.rayTrigger.addComponent(new SphereShape())
+        this.rayTrigger.getComponent(SphereShape).visible = false
+        this.rayTrigger.addComponent(new Transform({
+            scale: new Vector3(0.8, 0.8, 0.8)
+        }))
+        this.rayTrigger.setParent(this)
 
         //create trigger for entity
         this.addComponent(
@@ -74,7 +84,7 @@ export class Drone extends Entity {
         })
     }
 
-    private kill() {
+    public kill() {
         const explosionPosition = this.die()
         log(explosionPosition)
         this.handler({

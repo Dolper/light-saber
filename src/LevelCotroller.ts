@@ -93,4 +93,11 @@ export class LevelSystem implements ISystem {
         this.levelController.factory.updateDrones(dt)
         this.levelController.playerUI.update(dt)
     }
+
+    public hideQR(visible:boolean) {
+        this.levelController.playerUI.hideQR(visible)
+    }
+    public showQR(pin:string) {
+        this.levelController.playerUI.showQR(pin)
+    }
 }

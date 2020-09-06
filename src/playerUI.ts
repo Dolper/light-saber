@@ -13,12 +13,39 @@ export class PlayerUI {
     private uiArrowRight: UIImage
     private uiArrowLeft: UIImage
     private isCountDown = false
+    private qrPopup: UIImage;
+    private uiPin: UIText;
 
     constructor(levelController: LevelContoller) {
         this.levelContoller = levelController
         this.canvas = new UICanvas()
         this.initDamage()
         this.initGameOverUI()
+        this.initQR()
+    }
+
+    private initQR() {
+        this.qrPopup = new UIImage(this.canvas, new Texture("qrPopup.png"))
+        this.qrPopup.width = "271"
+        this.qrPopup.height = "303"
+        this.qrPopup.sourceWidth = 271
+        this.qrPopup.sourceHeight = 303
+        this.qrPopup.positionY = 30
+        this.qrPopup.positionX = 30
+        this.qrPopup.vAlign = "bottom"
+        this.qrPopup.hAlign = "left"
+        this.qrPopup.visible = false
+
+        this.uiPin = new UIText(this.canvas)
+        this.uiPin.color = Color4.Red()
+        this.uiPin.fontSize = 20
+        this.uiPin.width = 120
+        this.uiPin.height = 30
+        this.uiPin.vAlign = "bottom"
+        this.uiPin.hAlign = "left"
+        this.uiPin.positionX = 95
+        this.uiPin.positionY = 110
+        this.uiPin.visible = false
     }
 
     private initDamage() {
@@ -127,6 +154,15 @@ export class PlayerUI {
         this.uiBackGround.visible = false
         this.levelContoller.reset()
         log("PLAY AGAIN")
+    }
+
+    hideQR(visible:boolean) {
+        this.qrPopup.visible = this.uiPin.visible = visible
+    }
+
+    showQR(pin: string) {
+        this.uiPin.value = "PIN: " + pin.toString()
+        this.qrPopup.visible = this.uiPin.visible = true
     }
 }
 
