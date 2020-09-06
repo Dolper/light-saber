@@ -53,7 +53,7 @@ export class Sword extends Entity {
         this.swordLight.setParent(this)
 
         // for debug
-        this.take()
+        // this.take()
     }
 
     addPistol() {
@@ -84,7 +84,7 @@ export class Sword extends Entity {
         this.getComponent(utils.KeepRotatingComponent).stop()
         this.removeComponent(utils.KeepRotatingComponent)
         this.swordBase.removeComponent(OnPointerDown)
-
+        this.getComponent(Transform).rotation = this.swordRotation
         engine.addSystem(new SaberSystem(this))
     }
 }
