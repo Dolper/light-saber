@@ -6,12 +6,13 @@ import { Player } from "./player"
 const camera = Camera.instance
 
 export class LevelContoller {
-    private currentLevel = 1
+    private currentLevel = 10
     private factory: DroneFactory
     private player: Player
     constructor(sword: any) {
         this.player = new Player()
         this.factory = new DroneFactory(sword, this.player)
+        this.nextLevel()
     }
 
     public CheckFactory() {
@@ -29,7 +30,7 @@ export class LevelContoller {
         for (let i = 0; i < this.currentLevel; i++) {
             const points = []
             for (let j = 0; j < Tools.getRandomInt(3, 7+(this.currentLevel*2)); j++) {
-                points[j] = new Vector3(Tools.getRandomInt(3, 29), Tools.getRandomInt(0, 12), Tools.getRandomInt(3, 29))
+                points[j] = new Vector3(Tools.getRandomInt(3, 29), Tools.getRandomInt(0, 5), Tools.getRandomInt(3, 29))
             }
 
             points.push(camera.position)

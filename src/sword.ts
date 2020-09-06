@@ -58,7 +58,7 @@ export class Sword extends Entity {
         engine.addEntity(this)
         swordBase.setParent(this)
         this.swordLight.setParent(this)
-        swordLightTest.setParent(this.swordLight)
+        // swordLightTest.setParent(this.swordLight)
         this.setParent(Attachable.PLAYER)
 
 
@@ -133,7 +133,7 @@ export class SaberSystem implements ISystem {
         this.globalSword = new Entity()
         this.globalSword.addComponent(new BoxShape())
         this.globalSword.addComponent(new Transform({
-            scale: new Vector3(0.1, 3.1, 0.1)
+            scale: new Vector3(0.1, .1, 0.1)
         }))
         this.globalSword.getComponent(BoxShape).withCollisions = false
         this.globalSword2 = new Entity()
@@ -142,8 +142,8 @@ export class SaberSystem implements ISystem {
             scale: new Vector3(0.1, 0.1, 0.1)
         }))
 
-        engine.addEntity(this.globalSword)
-        engine.addEntity(this.globalSword2)
+        // engine.addEntity(this.globalSword)
+        // engine.addEntity(this.globalSword2)
 
         this.clipStart = new AudioClip("sfxStart.mp3")
         this.sourceStart = new AudioSource(this.clipStart)
@@ -191,7 +191,7 @@ export class SaberSystem implements ISystem {
 
 
 
-            this.globalSword2.getComponent(Transform).position = this.globalSword.getComponent(Transform).position
+            // this.globalSword2.getComponent(Transform).position = this.globalSword.getComponent(Transform).position
 
 
             let QCamera = camera.rotation
@@ -204,26 +204,37 @@ export class SaberSystem implements ISystem {
 
 
             let Dir = new Vector3(0,1,0).rotate(QResult)
-            log(Dir)
+            // log(Dir)
             //this.globalSword2.getComponent(Transform).position = Dir
 
-            this.globalSword2.getComponent(Transform).position = Dir.add(this.globalSword.getComponent(Transform).position)
+            const DirRes = Dir.add(this.globalSword.getComponent(Transform).position)
+
+            this.globalSword2.getComponent(Transform).position = DirRes
+
+
+            let rayFromPoints = physicsCast.getRayFromPositions(new Vector3(ligthPos.x, ligthPos.y, ligthPos.z), DirRes)
+            rayFromPoints.distance  = 3
 
             // let ray: Ray = {
-            //     origin: originPos,
-            //     direction: direction,
-            //     distance: 10,
+            //     origin: DirRes,
+            //     direction: QResult,
+            //     distance: 100,
             // }
             //
-            // physicsCast.hitAll(
-            //     ray,
-            //     (e) => {
-            //         for (let entityHit of e.entities) {
-            //             log(entityHit.entity.entityId)
-            //         }
-            //     },
-            //     0
-            // )
+            physicsCast.hitFirst(
+                rayFromPoints,
+                (e) => {
+                    // for (let entityHit of e.entities) {
+                        log('physicsCast', e.entity.entityId)
+                        if (e.entity.entityId != null && e.entity.entityId in engine.entities) {
+                            const entity = engine.entities[e.entity.entityId]
+                            if(entity.hasComponent(SphereShape)) {
+                                log('kill drone')
+                                engine.removeEntity(entity)
+                            }
+                        }
+                    // }
+                })
             //
             this.globalSword.getComponent(Transform).position = new Vector3(ligthPos.x, ligthPos.y, ligthPos.z)  
             // this.globalSword.getComponent(Transform).rotation = ligthRot

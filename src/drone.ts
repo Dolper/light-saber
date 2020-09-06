@@ -17,15 +17,17 @@ export class Drone {
         this.isLive = true
         this.sword = sword
         this.path = path
-        this.entity = new Entity()
+        this.entity = new Entity("DRONE")
         this.entity.addComponent(new Transform({
+            position: path.path[0],
             scale: new Vector3(2, 2, 2)
         }))
 
         this.PatrolPath = new PatrolPath(this.entity, this.path, speed)
 
         engine.addSystem(this.PatrolPath)
-        this.entity.addComponent(new GLTFShape("drone.glb"))
+        // this.entity.addComponent(new GLTFShape("drone.glb"))
+        this.entity.addComponent(new SphereShape())
         this.entity.addComponent(
             new OnPointerDown(() => {
                 this.died()
@@ -37,7 +39,8 @@ export class Drone {
                     distance: 14,
                 })
         )
-        this.entity.getComponent(GLTFShape).withCollisions = false
+        // this.entity.getComponent(GLTFShape).withCollisions = true
+        // this.entity.getComponent(SphereShape).visible = false
 
         // create trigger area object, setting size and relative position
         let triggerBox = new utils.TriggerBoxShape(new Vector3(2, 2, 2), Vector3.Zero())
@@ -74,18 +77,18 @@ export class Drone {
         this.sword.swordLight.addComponentOrReplace(source)
 
         let dronPosition = this.entity.getComponent(Transform).position
-        this.explosion = new Entity()
-        this.explosion.addComponent(new Transform({
-            position: new Vector3(dronPosition.x, dronPosition.y + 0.5, dronPosition.z),
-            scale: new Vector3(0.02, 0.02, 0.02)
-        }))
-        this.explosion.addComponent(new GLTFShape("bang.glb"))
-        engine.addEntity(this.explosion)
+        // this.explosion = new Entity()
+        // this.explosion.addComponent(new Transform({
+        //     position: new Vector3(dronPosition.x, dronPosition.y + 0.5, dronPosition.z),
+        //     scale: new Vector3(0.02, 0.02, 0.02)
+        // }))
+        // this.explosion.addComponent(new GLTFShape("bang.glb"))
+        // engine.addEntity(this.explosion)
 
         this.entity.getComponent(Transform).position = new Vector3(8, 10, 8)
 
 
-        engine.addSystem(new DroneSystem(this.entity, this.explosion))
+        // engine.addSystem(new DroneSystem(this.entity, this.explosion))
     }
 }
 
@@ -103,20 +106,20 @@ export class DroneSystem implements ISystem {
         this.entity.getComponent(Transform).position = new Vector3(16, 15, 16)
     }
     update(dt: number) {
-        this.dt += dt
-        if (!this.isExployed) {
-            if (this.dt > 1) {
-                if (!this.isDied) {
-                    this.entity.removeComponent(utils.TriggerComponent)
-                    engine.removeEntity(this.entity)
-                    this.isDied = true
-                }
-            }
-            if (this.dt > 3) {
-                engine.removeEntity(this.explosion)
-                this.isExployed = true
-                log("BANG!!!! ! ! ! ! ")
-            }
-        }
+        // this.dt += dt
+        // if (!this.isExployed) {
+        //     if (this.dt > 1) {
+        //         if (!this.isDied) {
+        //             this.entity.removeComponent(utils.TriggerComponent)
+        //             engine.removeEntity(this.entity)
+        //             this.isDied = true
+        //         }
+        //     }
+        //     if (this.dt > 3) {
+        //         engine.removeEntity(this.explosion)
+        //         this.isExployed = true
+        //         log("BANG!!!! ! ! ! ! ")
+        //     }
+        // }
     }
 }
