@@ -47,6 +47,7 @@ export class Drone extends Entity {
         this.rayTrigger = new Entity("droneRayTrigger")
         this.rayTrigger.addComponent(new SphereShape())
         this.rayTrigger.getComponent(SphereShape).visible = false
+        this.rayTrigger.getComponent(SphereShape).isPointerBlocker = false
         this.rayTrigger.addComponent(new Transform({
             scale: new Vector3(0.8, 0.8, 0.8)
         }))
