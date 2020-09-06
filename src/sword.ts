@@ -142,8 +142,8 @@ export class SaberSystem implements ISystem {
         this.globalSword2.addComponent(new Transform({
             scale: new Vector3(0.1, 0.1, 0.1)
         }))
-        engine.addEntity(this.globalSword)
-        engine.addEntity(this.globalSword2)
+       // engine.addEntity(this.globalSword)
+       // engine.addEntity(this.globalSword2)
 
         this.sourcesFast = []
         this.clipsFast = []
