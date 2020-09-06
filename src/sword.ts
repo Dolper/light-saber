@@ -58,6 +58,25 @@ export class Sword {
                 this.uiPin.visible = true
                 this.entity.getComponent(utils.KeepRotatingComponent).stop()
                 engine.addSystem(new SaberSystem(this))
+                
+                let pistol = new Entity()
+                pistol.addComponent(new Transform({
+                    position: new Vector3(16, 1.5, 16),
+                    scale: new Vector3(1.5, 1.5, 1.5)
+                }))
+                pistol.addComponent(new GLTFShape("pistol.glb"))
+                pistol.addComponent(new utils.KeepRotatingComponent(Quaternion.Euler(15, 90, 0)))
+                pistol.addComponent(
+                    new OnPointerDown(() => {
+                    },
+                    {
+                        button: ActionButton.PRIMARY,
+                        showFeedback: true,
+                        hoverText: "WILL BE AVAILABLE IN THE NEXT STAR MARS VERSION",
+                        distance: 4,
+                    })
+            )
+                engine.addEntity(pistol)
             },
                 {
                     button: ActionButton.PRIMARY,

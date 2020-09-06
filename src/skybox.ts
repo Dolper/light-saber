@@ -23,7 +23,6 @@ export class Skybox {
         logo.addComponent(new Billboard())
         engine.addEntity(logo)
 
-
         let clip = new AudioClip("sound.mp3")
         let source = new AudioSource(clip)
         source.playing = true
