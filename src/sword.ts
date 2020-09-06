@@ -1,25 +1,47 @@
 import { Tools } from "./tools"
 
 const camera = Camera.instance
-
 import utils from "../node_modules/decentraland-ecs-utils/index"
+import * as ui from '../node_modules/@dcl/ui-utils/index'
 
 export class Sword {
-    private pinEntity: Entity
-    private qrEntity: Entity
+    public uiPin: UIText
     public entity: Entity
     public swordLight: Entity
     public swordBase: Entity
-    constructor(qrEntity: Entity, pinEntity: Entity) {
+    public qrPopup: UIImage
+    public canvas: UICanvas = new UICanvas()
 
-        this.qrEntity = qrEntity
-        this.pinEntity = pinEntity
+    constructor(pin: number) {
+        this.qrPopup = new UIImage(this.canvas, new Texture("qrPopup.png"))
+        this.qrPopup.width = "271"
+        this.qrPopup.height = "303"
+        this.qrPopup.sourceWidth = 271
+        this.qrPopup.sourceHeight = 303
+        this.qrPopup.positionY = 30
+        this.qrPopup.positionX = 30
+        this.qrPopup.vAlign = "bottom"
+        this.qrPopup.hAlign = "left"
+        this.qrPopup.visible = true
+
+        this.uiPin = new UIText(this.canvas)
+        this.uiPin.value = "PIN: " + pin.toString()
+        this.uiPin.color = Color4.Red()
+        this.uiPin.fontSize = 20
+        this.uiPin.width = 120
+        this.uiPin.height = 30
+        this.uiPin.vAlign = "bottom"
+        this.uiPin.hAlign = "left"
+        this.uiPin.positionX = 95
+        this.uiPin.positionY = 110
+        this.uiPin.visible = true
 
         this.entity = new Entity()
         this.entity.addComponent(new Transform({
             position: new Vector3(16, 1.5, 16),
             scale: new Vector3(2, 2, 2)
         }))
+        this.entity.addComponent(new utils.KeepRotatingComponent(Quaternion.Euler(15, 90, 0)))
 
         this.swordBase = new Entity()
         this.swordBase.addComponent(new Transform({
@@ -29,65 +51,33 @@ export class Sword {
         this.swordBase.addComponent(new GLTFShape("swordBase.glb"))
         this.swordBase.addComponent(
             new OnPointerDown(() => {
-                engine.addEntity(this.qrEntity)
-                engine.addEntity(this.pinEntity)
                 this.entity.getComponent(Transform).position = new Vector3(0.3, 0.5, 0.9)
                 this.entity.getComponent(Transform).scale = new Vector3(1, 1, 1)
                 this.entity.setParent(Attachable.PLAYER)
+                this.qrPopup.visible = true
+                this.uiPin.visible = true
+                this.entity.getComponent(utils.KeepRotatingComponent).stop()
+                engine.addSystem(new SaberSystem(this))
             },
                 {
                     button: ActionButton.PRIMARY,
                     showFeedback: true,
                     hoverText: "TAKE ME",
-                    distance: 8,
+                    distance: 4,
                 })
         )
 
-
         this.swordLight = new Entity()
         this.swordLight.addComponent(new Transform({
-            position: new Vector3(0, 0, 0),
-            scale: new Vector3(1, 0.02, 1)
+            position: new Vector3(-0.001, 0.019, 0),
+            scale: new Vector3(1, 0.03, 1)
         }))
         this.swordLight.addComponent(new GLTFShape("swordLight.glb"))
 
-
-
-
-        /*this.swordLight.getComponent(GLTFShape).withCollisions = false
-
-        // create trigger area object, setting size and relative position
-        let triggerBox = new utils.TriggerBoxShape(new Vector3(1, 1, 1), Vector3.Zero())
-
-        //create trigger for entity
-        this.swordLight.addComponent(
-            new utils.TriggerComponent(
-                triggerBox, //shape
-                1, //layer
-                0, //triggeredByLayer
-                () => {
-                    log("KILLED!")
-                    //this.killed()
-                }, //onTriggerEnter
-                null,
-                null,
-                null, true //onCameraExit
-            )
-        )
-*/
         this.swordBase.setParent(this.entity)
         this.swordLight.setParent(this.entity)
 
         engine.addEntity(this.entity)
-        engine.addSystem(new SaberSystem(this.entity, this.swordBase, this.swordLight))
-    }
-
-    private killed() {
-        let clip = new AudioClip("sfxFight.mp3")
-        let source = new AudioSource(clip)
-        source.playing = true
-        source.loop = false
-        this.swordLight.addComponentOrReplace(source)
     }
 }
 
@@ -106,6 +96,8 @@ export class SaberSystem implements ISystem {
     private clipStart: AudioClip
     private clipSlow: AudioClip
     private clipsFast
+    private qrPopup: UIImage
+    private uiPin: UIText
 
     private sourceStart: AudioSource
     private sourceSlow: AudioSource
@@ -113,11 +105,13 @@ export class SaberSystem implements ISystem {
     private lastX = 0
     private lastY = 0
 
-    constructor(sword: Entity, swordBase: Entity, swordLight: Entity) {
+    constructor(sword: Sword) {
         log("Saber system init")
-        this.swordBase = swordBase
-        this.swordLight = swordLight
-        this.sword = sword
+        this.swordBase = sword.swordBase
+        this.swordLight = sword.swordLight
+        this.sword = sword.entity
+        this.qrPopup = sword.qrPopup
+        this.uiPin = sword.uiPin
 
         this.sourcesFast = []
         this.clipsFast = []
@@ -127,7 +121,6 @@ export class SaberSystem implements ISystem {
         sourceMusic.playing = true
         sourceMusic.loop = true
         this.sword.addComponentOrReplace(sourceMusic)
-
 
         this.clipStart = new AudioClip("sfxStart.mp3")
         this.sourceStart = new AudioSource(this.clipStart)
@@ -143,7 +136,6 @@ export class SaberSystem implements ISystem {
 
         this.clipsFast[2] = new AudioClip("sfxFast3.mp3")
         this.sourcesFast[2] = new AudioSource(this.clipsFast[2])
-
     }
 
     update(dt: number) {
@@ -151,20 +143,15 @@ export class SaberSystem implements ISystem {
         this.timer += dt
 
         if (this.isCanStart) {
-            //log(this.isCanStart)
             if (this.swordLight.getComponent(Transform).scale.y <= 1)
                 this.swordLight.getComponent(Transform).scale.y += dt * 2
             else this.isCanStart = false
         }
         if (this.dt > 3) {
             if (!this.isStarted && this.isCanStart) {
-
-                let sx = Math.round(this.sword.getComponent(Transform).rotation.x * 100) / 100
                 this.isCanStart = true
                 this.sourceStart.playing = true
                 this.sourceStart.loop = false
-
-                log("play once")
                 this.swordBase.addComponentOrReplace(this.sourceStart)
                 this.isStarted = true
             }
@@ -174,8 +161,6 @@ export class SaberSystem implements ISystem {
                 this.sourceSlow.playing = true
                 this.sourceSlow.loop = true
                 this.sourceSlow.volume = 0.2
-
-                log("playing")
                 this.swordLight.addComponent(this.sourceSlow)
                 this.isPlaying = true
             }
@@ -190,15 +175,16 @@ export class SaberSystem implements ISystem {
             let rnd = Tools.getRandomInt(0, 3)
             this.sourcesFast[rnd].playOnce()
             this.sourcesFast[rnd].volume = 0.5
-
-            //log("playing FAST:", rnd)
             this.swordBase.addComponentOrReplace(this.sourcesFast[rnd])
             this.isFastPlaying = true
         }
 
         if (this.timer > 0.5) {
-            if (this.lastX != x && this.dt > 3)
+            if (this.lastX != x && this.dt > 3) {
                 this.isCanStart = true
+                this.qrPopup.visible = false
+                this.uiPin.visible = false
+            }
 
             /*
   let ray: Ray = {

@@ -3,14 +3,25 @@ export class Skybox {
 
 
         let light = new Entity()
-
         light.addComponent(new GLTFShape("light.glb"))
         light.addComponent(new Transform({
             position: new Vector3(16, 0.1, 16),
             scale: new Vector3(1, 2, 1)
         }))
-
         engine.addEntity(light)
+
+
+        let logo = new Entity() // Billoard 
+        logo.addComponent(new GLTFShape("logo.glb"))
+        logo.addComponent(
+            new Transform({
+                position: new Vector3(16, 16, 16),
+                scale: new Vector3(1, 1, 1),
+                rotation: new Quaternion(0, 0, 0)
+            })
+        )
+        logo.addComponent(new Billboard())
+        engine.addEntity(logo)
 
 
         let clip = new AudioClip("sound.mp3")
@@ -21,7 +32,6 @@ export class Skybox {
 
 
         let skyboxEntity = new Entity()
-
         skyboxEntity.addComponent(new GLTFShape("skybox.glb"))
         skyboxEntity.addComponent(new Transform({
             position: new Vector3(16, -3, 16),

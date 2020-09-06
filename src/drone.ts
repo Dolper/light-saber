@@ -31,7 +31,7 @@ export class Drone extends Entity {
                     if (this.isLive) this.kill()
                 },
                 {
-                    button: ActionButton.POINTER,
+                    button: ActionButton.ANY,
                     showFeedback: true,
                     hoverText: "SHOOT",
                     distance: 14,
