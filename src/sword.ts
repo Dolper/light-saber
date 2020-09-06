@@ -22,7 +22,7 @@ export class Sword {
         this.qrPopup.positionX = 30
         this.qrPopup.vAlign = "bottom"
         this.qrPopup.hAlign = "left"
-        this.qrPopup.visible = true
+        this.qrPopup.visible = false
 
         this.uiPin = new UIText(this.canvas)
         this.uiPin.value = "PIN: " + pin.toString()
@@ -34,7 +34,7 @@ export class Sword {
         this.uiPin.hAlign = "left"
         this.uiPin.positionX = 95
         this.uiPin.positionY = 110
-        this.uiPin.visible = true
+        this.uiPin.visible = false
 
         this.entity = new Entity()
         this.entity.addComponent(new Transform({
