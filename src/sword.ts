@@ -87,6 +87,17 @@ export class Sword extends Entity {
         this.getComponent(Transform).rotation = this.swordRotation
         engine.addSystem(new SaberSystem(this))
     }
+
+    private isLaserOn = true
+
+    switch() {
+        if (this.isLaserOn) {
+            this.swordLight.getComponent(Transform).scale.y = 0.03
+        } else {
+            this.swordLight.getComponent(Transform).scale.y = 1
+        }
+        this.isLaserOn != this.isLaserOn
+    }
 }
 
 export class SaberSystem implements ISystem {
