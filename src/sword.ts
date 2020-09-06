@@ -18,7 +18,7 @@ export class Sword {
         this.qrPopup.height = "303"
         this.qrPopup.sourceWidth = 271
         this.qrPopup.sourceHeight = 303
-        this.qrPopup.positionY = 30
+        this.qrPopup.positionY = 200
         this.qrPopup.positionX = 30
         this.qrPopup.vAlign = "bottom"
         this.qrPopup.hAlign = "left"
@@ -33,7 +33,7 @@ export class Sword {
         this.uiPin.vAlign = "bottom"
         this.uiPin.hAlign = "left"
         this.uiPin.positionX = 95
-        this.uiPin.positionY = 110
+        this.uiPin.positionY = 280
         this.uiPin.visible = false
 
         this.entity = new Entity()
