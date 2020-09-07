@@ -13,7 +13,7 @@ export class Drone extends Entity {
     private handler
     private rayTrigger: Entity;
 
-    constructor(path: Path3D, speed: number, handler) {
+    constructor(path: Path3D, speed: number, handler, needAddShootComponent) {
         super()
         this.handler = handler
         this.isLive = true
@@ -28,6 +28,7 @@ export class Drone extends Entity {
         engine.addSystem(this.PatrolPath)
         this.addComponent(new GLTFShape("drone.glb"))
 
+        if (needAddShootComponent) this.addShootComponent()
         this.getComponent(GLTFShape).withCollisions = false
 
         // create trigger area object, setting size and relative position
@@ -75,7 +76,7 @@ export class Drone extends Entity {
                 },
                 {
                     button: ActionButton.ANY,
-                    showFeedback: true,
+                    showFeedback: false,
                     hoverText: "SHOOT",
                     distance: 50,
                 })

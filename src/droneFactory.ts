@@ -5,6 +5,7 @@ export class DroneFactory {
     private explosions = []
     private levelHandler
     private explosionShape = new GLTFShape("bang.glb")
+    public needAddShootComponent = false
 
     constructor(levelHandler) {
         this.levelHandler = levelHandler
@@ -35,7 +36,7 @@ export class DroneFactory {
     }
 
     public Add(path: Path3D, speed: number) {
-        let drone = new Drone(path, speed, (event) => this.droneHandler(event))
+        let drone = new Drone(path, speed, (event) => this.droneHandler(event), this.needAddShootComponent)
         this.drones.push(drone)
         this.levelHandler({
             event: 'new',

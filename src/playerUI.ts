@@ -115,18 +115,18 @@ export class PlayerUI {
         this.uiPin.vAlign = "bottom"
         this.uiPin.hAlign = "left"
         this.uiPin.positionX = 95
-        this.uiPin.positionY = 280
+        this.uiPin.positionY = 275
         this.uiPin.visible = false
 
         this.uiUrl = new UIText(this.canvas)
         this.uiUrl.color = Color4.Gray()
-        this.uiUrl.fontSize = 20
+        this.uiUrl.fontSize = 12
         this.uiUrl.width = 120
         this.uiUrl.height = 30
         this.uiUrl.vAlign = "bottom"
         this.uiUrl.hAlign = "left"
-        this.uiUrl.positionX = 40
-        this.uiUrl.positionY = 220
+        this.uiUrl.positionX = 90
+        this.uiUrl.positionY = 300
         this.uiUrl.value = 's.dapp-craft.com'
         this.uiUrl.visible = false
     }
