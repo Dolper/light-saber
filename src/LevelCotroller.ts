@@ -19,6 +19,7 @@ export class LevelContoller {
 
     health = new ui.UIBar(1, -30, 60, Color4.Red(), BarStyles.ROUNDSILVER, 1)
     healthLabel = new ui.CornerLabel('Health:', -170, 55)
+    changeHandsHandeler: () => void;
 
     constructor() {
         this.playerUI = new PlayerUI(this)
@@ -73,6 +74,10 @@ export class LevelContoller {
         this.gameOver = false
         this.nextLevel()
     }
+
+    public changeHands() {
+        this.changeHandsHandeler()
+    }
 }
 
 export class LevelSystem implements ISystem {
@@ -99,5 +104,9 @@ export class LevelSystem implements ISystem {
     }
     public showQR(pin:string) {
         this.levelController.playerUI.showQR(pin)
+    }
+
+    setChangeHandsHandeler(param: () => void) {
+        this.levelController.changeHandsHandeler = param
     }
 }

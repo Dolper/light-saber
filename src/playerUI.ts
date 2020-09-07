@@ -20,6 +20,7 @@ export class PlayerUI {
     private closeBtn: UIImage
     private handsBtn: UIImage
     private isOpenedMenu: boolean = false
+    private uiUrl: UIText;
 
     constructor(levelController: LevelContoller) {
         this.levelContoller = levelController
@@ -89,7 +90,8 @@ export class PlayerUI {
         this.handsBtn.hAlign = "center"
         this.handsBtn.visible = false
         this.handsBtn.onClick = new OnClick(() => {
-            // changeHands() ???
+            this.levelContoller.changeHands()
+            this.closeMenu()
         })
     }
 
@@ -115,6 +117,18 @@ export class PlayerUI {
         this.uiPin.positionX = 95
         this.uiPin.positionY = 280
         this.uiPin.visible = false
+
+        this.uiUrl = new UIText(this.canvas)
+        this.uiUrl.color = Color4.Gray()
+        this.uiUrl.fontSize = 20
+        this.uiUrl.width = 120
+        this.uiUrl.height = 30
+        this.uiUrl.vAlign = "bottom"
+        this.uiUrl.hAlign = "left"
+        this.uiUrl.positionX = 40
+        this.uiUrl.positionY = 220
+        this.uiUrl.value = 's.dapp-craft.com'
+        this.uiUrl.visible = false
     }
 
     private initDamage() {
@@ -225,17 +239,21 @@ export class PlayerUI {
         log("PLAY AGAIN")
     }
 
-    hideQR(visible: boolean) {
-        this.qrPopup.visible = this.uiPin.visible = visible
+    hideQR(visible:boolean) {
+        this.qrPopup.visible = this.uiPin.visible = this.uiUrl.visible = visible
     }
 
     showQR(pin: string) {
         this.uiPin.value = "PIN: " + pin.toString()
-        this.qrPopup.visible = this.uiPin.visible = true
+        this.qrPopup.visible = this.uiPin.visible = this.uiUrl.visible = true
     }
 
-    openMenu() {
-
+    closeMenu() {
+        this.isOpenedMenu = !this.isOpenedMenu
+        this.uiBackMenu.visible = this.isOpenedMenu
+        this.closeBtn.visible = this.isOpenedMenu
+        this.menuBtn.visible = !this.isOpenedMenu
+        this.handsBtn.visible = !this.handsBtn.visible
     }
 }
 

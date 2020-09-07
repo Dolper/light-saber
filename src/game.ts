@@ -11,11 +11,16 @@ let d = Tools.getRandomInt(0, 10)
 let pin = Tools.getRandomInt(0, 10) + "" + Tools.getRandomInt(0, 10) + "" + d + "" + d
 // pin='0002'
 
-let sword = new Sword()
 const levelSystem = new LevelSystem()
+let sword = new Sword(()=>{
+    levelSystem.showQR(pin)
+})
+levelSystem.setChangeHandsHandeler(()=>{
+    sword.changeHands()
+})
 const socket = new WebSocket("wss://s.dapp-craft.com/scene/" + pin);
 
-levelSystem.showQR(pin)
+
 
 socket.onmessage = function (event) {
     try {
