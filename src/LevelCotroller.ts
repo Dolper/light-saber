@@ -56,7 +56,7 @@ export class LevelContoller {
         for (let i = 0; i < currentLevel; i++) {
             const points = []
             for (let j = 0; j < Tools.getRandomInt(3, 7 + (currentLevel * 2)); j++) {
-                points[j] = new Vector3(Tools.getRandomInt(3, 29), Tools.getRandomInt(0, 12), Tools.getRandomInt(3, 29))
+                points[j] = new Vector3(Tools.getRandomInt(3, 29), Tools.getRandomInt(0, 6+currentLevel), Tools.getRandomInt(3, 29))
             }
 
             points.push(camera.position)

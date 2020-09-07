@@ -10,6 +10,7 @@ export class Sword extends Entity {
     public swordLight: Entity
     public swordBase: Entity
     public swordRotation: Quaternion
+    public isRightHand: true    
 
     constructor() {
         super("Sword")
@@ -66,11 +67,20 @@ export class Sword extends Entity {
         pistol.addComponent(new utils.KeepRotatingComponent(Quaternion.Euler(15, 90, 0)))
         pistol.addComponent(
             new OnPointerDown(() => {
+                let x
+                if(this.isRightHand) x = -0.5
+                else x = 0.5
+                pistol.getComponent(Transform).position = new Vector3(x, 0.55, 0.95)
+                pistol.getComponent(Transform).rotation = Quaternion.Euler(0, 270, 0)
+                pistol.getComponent(Transform).scale = new Vector3(0.8, 0.8, 0.8)
+                pistol.setParent(Attachable.PLAYER)
+                pistol.getComponent(utils.KeepRotatingComponent).stop()
+                pistol.removeComponent(utils.KeepRotatingComponent)
                 },
                 {
                     button: ActionButton.PRIMARY,
                     showFeedback: true,
-                    hoverText: "WILL BE AVAILABLE IN THE NEXT STAR MARS VERSION",
+                    hoverText: "TAKE",
                     distance: 4,
                 })
         )
@@ -78,7 +88,10 @@ export class Sword extends Entity {
     }
 
     take() {
-        this.getComponent(Transform).position = new Vector3(0.3, 0.5, 0.9)
+        let x
+        if(this.isRightHand) x = 0.5
+        else x = -0.5
+        this.getComponent(Transform).position = new Vector3(x, 0.5, 0.9)
         this.getComponent(Transform).scale = new Vector3(1, 1, 1)
         this.setParent(Attachable.PLAYER)
         this.getComponent(utils.KeepRotatingComponent).stop()
@@ -142,8 +155,8 @@ export class SaberSystem implements ISystem {
         this.globalSword2.addComponent(new Transform({
             scale: new Vector3(0.1, 0.1, 0.1)
         }))
-       // engine.addEntity(this.globalSword)
-       // engine.addEntity(this.globalSword2)
+        engine.addEntity(this.globalSword)
+        engine.addEntity(this.globalSword2)
 
         this.sourcesFast = []
         this.clipsFast = []

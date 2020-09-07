@@ -10,6 +10,15 @@ export class Skybox {
         }))
         engine.addEntity(light)
 
+        let collider = new Entity()
+        collider.addComponent(new GLTFShape("collider.glb"))
+        collider.addComponent(new Transform({
+            position: new Vector3(16, 0, 16),
+            scale: new Vector3(2, 2, 2)
+        }))
+        collider.getComponent(GLTFShape).isPointerBlocker = false
+        engine.addEntity(collider)
+
 
         let logo = new Entity() // Billoard 
         logo.addComponent(new GLTFShape("logo.glb"))

@@ -27,7 +27,7 @@ socket.onmessage = function (event) {
             sword.swordRotation.x = QQ.x
             sword.swordRotation.y = QQ.y
             sword.swordRotation.z = QQ.z
-            sword.swordRotation.w = QQ.w
+            sword.swordRotation.w = QQ.w    
         } else if (msg.type == 'cmd') {
             if (msg.cmd == 'on') {
                 sword.switch()

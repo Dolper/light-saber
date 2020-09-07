@@ -45,10 +45,13 @@ export class Drone extends Entity {
         let triggerBox = new utils.TriggerBoxShape(new Vector3(2, 2, 2), Vector3.Zero())
 
         this.rayTrigger = new Entity("droneRayTrigger")
+        this.rayTrigger.addComponentOrReplace(new Transform({
+            scale: new Vector3(0.001, 0.001, 0.001)
+        }))
         this.rayTrigger.addComponent(new SphereShape())
         this.rayTrigger.getComponent(SphereShape).visible = false
         this.rayTrigger.getComponent(SphereShape).isPointerBlocker = false
-        this.rayTrigger.addComponent(new Transform({
+        this.rayTrigger.addComponentOrReplace(new Transform({
             scale: new Vector3(0.8, 0.8, 0.8)
         }))
         this.rayTrigger.setParent(this)
@@ -100,7 +103,7 @@ export class Drone extends Entity {
         let source = new AudioSource(clip)
         source.playing = true
         source.loop = false
-        source.volume = 0.5
+        source.volume = 1
         this.addComponentOrReplace(source)
 
         const explosionPosition = this.getComponent(Transform).position.clone()

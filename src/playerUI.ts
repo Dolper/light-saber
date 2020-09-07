@@ -3,6 +3,7 @@ import { LevelContoller } from "./LevelCotroller"
 export class PlayerUI {
     private uiPlayAgain: UIImage
     private uiBackGround: UIImage
+    private uiBackMenu: UIImage
     private uiGameOver: UIImage
     private canvas: UICanvas
     private levelContoller: LevelContoller
@@ -13,8 +14,12 @@ export class PlayerUI {
     private uiArrowRight: UIImage
     private uiArrowLeft: UIImage
     private isCountDown = false
-    private qrPopup: UIImage;
-    private uiPin: UIText;
+    private qrPopup: UIImage
+    private uiPin: UIText
+    private menuBtn: UIImage
+    private closeBtn: UIImage
+    private handsBtn: UIImage
+    private isOpenedMenu: boolean = false
 
     constructor(levelController: LevelContoller) {
         this.levelContoller = levelController
@@ -22,6 +27,70 @@ export class PlayerUI {
         this.initDamage()
         this.initGameOverUI()
         this.initQR()
+        this.initMenu()
+    }
+
+    private initMenu() {
+        this.uiBackMenu = new UIImage(this.canvas, new Texture("menu.png"))
+        this.uiBackMenu.width = "800"
+        this.uiBackMenu.height = "500"
+        this.uiBackMenu.sourceWidth = 800
+        this.uiBackMenu.sourceHeight = 500
+        this.uiBackMenu.positionY = 0
+        this.uiBackMenu.hAlign = "center"
+        this.uiBackMenu.vAlign = "center"
+        this.uiBackMenu.visible = false
+
+        this.closeBtn = new UIImage(this.canvas, new Texture("uiClose.png"))
+        this.closeBtn.width = "233"
+        this.closeBtn.height = "59"
+        this.closeBtn.sourceWidth = 233
+        this.closeBtn.sourceHeight = 59
+        this.closeBtn.positionY = 20
+        this.closeBtn.positionX = 0
+        this.closeBtn.vAlign = "bottom"
+        this.closeBtn.hAlign = "center"
+        this.closeBtn.visible = true
+        this.closeBtn.onClick = new OnClick(() => {
+            this.isOpenedMenu = !this.isOpenedMenu
+            this.uiBackMenu.visible = this.isOpenedMenu
+            this.menuBtn.visible = !this.isOpenedMenu
+            this.closeBtn.visible = this.isOpenedMenu
+
+            this.handsBtn.visible = !this.handsBtn.visible
+        })
+
+        this.menuBtn = new UIImage(this.canvas, new Texture("menuBtn.png"))
+        this.menuBtn.width = "233"
+        this.menuBtn.height = "59"
+        this.menuBtn.sourceWidth = 233
+        this.menuBtn.sourceHeight = 59
+        this.menuBtn.positionY = 20
+        this.menuBtn.positionX = 0
+        this.menuBtn.vAlign = "bottom"
+        this.menuBtn.hAlign = "center"
+        this.menuBtn.visible = true
+        this.menuBtn.onClick = new OnClick(() => {
+            this.isOpenedMenu = !this.isOpenedMenu
+            this.uiBackMenu.visible = this.isOpenedMenu
+            this.closeBtn.visible = this.isOpenedMenu
+            this.menuBtn.visible = !this.isOpenedMenu
+            this.handsBtn.visible = !this.handsBtn.visible
+        })
+
+        this.handsBtn = new UIImage(this.canvas, new Texture("handsBtn.png"))
+        this.handsBtn.width = "200"
+        this.handsBtn.height = "50"
+        this.handsBtn.sourceWidth = 245
+        this.handsBtn.sourceHeight = 71
+        this.handsBtn.positionY = 110
+        this.handsBtn.positionX = 0
+        this.handsBtn.vAlign = "bottom"
+        this.handsBtn.hAlign = "center"
+        this.handsBtn.visible = false
+        this.handsBtn.onClick = new OnClick(() => {
+            // changeHands() ???
+        })
     }
 
     private initQR() {
@@ -156,13 +225,17 @@ export class PlayerUI {
         log("PLAY AGAIN")
     }
 
-    hideQR(visible:boolean) {
+    hideQR(visible: boolean) {
         this.qrPopup.visible = this.uiPin.visible = visible
     }
 
     showQR(pin: string) {
         this.uiPin.value = "PIN: " + pin.toString()
         this.qrPopup.visible = this.uiPin.visible = true
+    }
+
+    openMenu() {
+
     }
 }
 
