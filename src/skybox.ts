@@ -1,23 +1,25 @@
 export class Skybox {
+    private collider: Entity;
+    private light: Entity;
+
     constructor() {
-
-
-        let light = new Entity()
-        light.addComponent(new GLTFShape("light.glb"))
-        light.addComponent(new Transform({
+        this.light = new Entity()
+        this.light.addComponent(new GLTFShape("light.glb"))
+        this.light.addComponent(new Transform({
             position: new Vector3(16, 0.1, 16),
             scale: new Vector3(1, 2, 1)
         }))
-        engine.addEntity(light)
+        this.light.getComponent(GLTFShape).isPointerBlocker = false
+        engine.addEntity(this.light)
 
-        let collider = new Entity()
-        collider.addComponent(new GLTFShape("collider.glb"))
-        collider.addComponent(new Transform({
+        this.collider = new Entity()
+        this.collider.addComponent(new GLTFShape("collider.glb"))
+        this.collider.addComponent(new Transform({
             position: new Vector3(16, 0, 16),
             scale: new Vector3(2, 2, 2)
         }))
-        collider.getComponent(GLTFShape).isPointerBlocker = false
-        engine.addEntity(collider)
+        this.collider.getComponent(GLTFShape).isPointerBlocker = false
+        engine.addEntity(this.collider)
 
 
         let logo = new Entity() // Billoard 
@@ -36,7 +38,7 @@ export class Skybox {
         let source = new AudioSource(clip)
         source.playing = true
         source.loop = true
-        light.addComponentOrReplace(source)
+        this.light.addComponentOrReplace(source)
 
 
         let skyboxEntity = new Entity()
@@ -45,6 +47,7 @@ export class Skybox {
             position: new Vector3(16, -3, 16),
             scale: new Vector3(0.5, 1, 0.5)
         }))
+        skyboxEntity.getComponent(GLTFShape).isPointerBlocker = false
         let animator = new Animator()
         skyboxEntity.addComponent(animator)
         const skyboxClip = new AnimationState("anim30")
@@ -70,6 +73,13 @@ export class Skybox {
         mat.albedoColor = Color3.Black()
         floor.addComponent(mat)
         engine.addEntity(floor)
+    }
+
+    public setBounds(value) {
+        this.collider.getComponent(GLTFShape).visible=value
+    }
+    public setLight(value) {
+        this.light.getComponent(GLTFShape).visible=value
     }
 
 }

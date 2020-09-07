@@ -10,9 +10,11 @@ export class Sword extends Entity {
     public swordLight: Entity
     public swordBase: Entity
     public swordRotation: Quaternion
-    public isRightHand = true
+    public isRightHand = false
     private takeHandler
     private pistol: Entity = null;
+    private taken: boolean = false;
+    private takenPistol: boolean = false;
 
     constructor(takeHandler) {
         super("Sword")
@@ -70,22 +72,12 @@ export class Sword extends Entity {
     }
 
     addPistol() {
-        this.pistol.addComponentOrReplace(new Transform({
-            position: new Vector3(16, 1.5, 16),
-            scale: new Vector3(1.5, 1.5, 1.5)
-        }))
+        this.pistol.getComponent(Transform).position= new Vector3(16, 1.5, 16)
+        this.pistol.getComponent(Transform).scale= new Vector3(1.5, 1.5, 1.5)
         this.pistol.addComponent(new utils.KeepRotatingComponent(Quaternion.Euler(15, 90, 0)))
         this.pistol.addComponent(
             new OnPointerDown(() => {
-                let x
-                if(this.isRightHand) x = -0.5
-                else x = 0.5
-                this.pistol.getComponent(Transform).position = new Vector3(x, 0.55, 0.95)
-                this.pistol.getComponent(Transform).rotation = Quaternion.Euler(0, 270, 0)
-                this.pistol.getComponent(Transform).scale = new Vector3(0.8, 0.8, 0.8)
-                this.pistol.setParent(Attachable.PLAYER)
-                this.pistol.getComponent(utils.KeepRotatingComponent).stop()
-                this.pistol.removeComponent(utils.KeepRotatingComponent)
+                    this.takePistol()
                 },
                 {
                     button: ActionButton.PRIMARY,
@@ -95,9 +87,21 @@ export class Sword extends Entity {
                 })
         )
     }
-
+    takePistol() {
+        this.takenPistol=true
+        this.changeHands(false)
+        this.pistol.getComponent(Transform).position.y = 0.55
+        this.pistol.getComponent(Transform).position.z = 0.95
+        this.pistol.getComponent(Transform).rotation = Quaternion.Euler(0, 270, 0)
+        this.pistol.getComponent(Transform).scale = new Vector3(0.8, 0.8, 0.8)
+        this.pistol.setParent(Attachable.PLAYER)
+        this.pistol.getComponent(utils.KeepRotatingComponent).stop()
+        this.pistol.removeComponent(utils.KeepRotatingComponent)
+        this.takeHandler('pistol')
+    }
     take() {
-        this.changeHands()
+        this.taken = true
+        this.changeHands(false)
         this.getComponent(Transform).position.y = 0.5
         this.getComponent(Transform).position.z = 0.9
         this.getComponent(Transform).scale = new Vector3(1, 1, 1)
@@ -107,8 +111,7 @@ export class Sword extends Entity {
         this.swordBase.removeComponent(OnPointerDown)
         this.getComponent(Transform).rotation = this.swordRotation
         engine.addSystem(new SaberSystem(this))
-
-        this.takeHandler(true)
+        this.takeHandler('sword')
     }
 
     private isLaserOn = true
@@ -122,13 +125,14 @@ export class Sword extends Entity {
         this.isLaserOn != this.isLaserOn
     }
 
-    public changeHands() {
-        this.isRightHand = !this.isRightHand
+    public changeHands(change=true) {
+        if (change) this.isRightHand = !this.isRightHand
         let x
         if (this.isRightHand) x = 0.5
         else x = -0.5
-        this.getComponent(Transform).position.x = x
-        if (this.pistol != null) {
+        if (this.taken)
+            this.getComponent(Transform).position.x = x
+        if (this.pistol != null && this.takenPistol) {
             this.pistol.getComponent(Transform).position.x = -x
         }
     }

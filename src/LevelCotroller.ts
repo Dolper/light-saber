@@ -3,6 +3,7 @@ import {Tools} from "./tools"
 import {PlayerUI} from "./playerUI"
 import * as ui from '../node_modules/@dcl/ui-utils/index'
 import {BarStyles} from '../node_modules/@dcl/ui-utils/utils/types'
+import {Skybox} from "./skybox";
 
 const camera = Camera.instance
 
@@ -10,6 +11,7 @@ export class LevelContoller {
     private gameOver = false
     public factory: DroneFactory
     public playerUI: PlayerUI
+    public skyBox:Skybox=null
 
     level = new ui.UICounter(0, -100, 150)
     levelLabel = new ui.CornerLabel('Level:', -170, 150)
@@ -20,6 +22,8 @@ export class LevelContoller {
     health = new ui.UIBar(1, -30, 60, Color4.Red(), BarStyles.ROUNDSILVER, 1)
     healthLabel = new ui.CornerLabel('Health:', -170, 55)
     changeHandsHandeler: () => void;
+
+    private gameStarted = false
 
     constructor() {
         this.playerUI = new PlayerUI(this)
@@ -36,18 +40,23 @@ export class LevelContoller {
             if (this.health.read() <= 0) {
                 this.playerUI.kill()
                 this.gameOver = true
+                if (this.skyBox != null) {
+                    this.skyBox.setBounds(false)
+                }
             }
         }
     }
 
     public CheckFactory() {
-        let count = 0
-        this.factory.drones.forEach(drone => {
-            if (drone.isLive)
-                count++
-        })
-        if (count == 0 && !this.gameOver)
-            this.nextLevel()
+        if (this.gameStarted) {
+            let count = 0
+            this.factory.drones.forEach(drone => {
+                if (drone.isLive)
+                    count++
+            })
+            if (count == 0 && !this.gameOver)
+                this.nextLevel()
+        }
     }
 
     public nextLevel() {
@@ -67,6 +76,13 @@ export class LevelContoller {
         }
     }
 
+    public startGame() {
+        this.gameStarted = true
+        if (this.skyBox != null) {
+            this.skyBox.setLight(false)
+        }
+    }
+
     public reset() {
         this.health.set(1)
         this.score.set(0)
@@ -74,16 +90,28 @@ export class LevelContoller {
         this.factory.Reset()
         this.gameOver = false
         this.nextLevel()
+        if (this.skyBox != null) {
+            this.skyBox.setBounds(true)
+        }
+
     }
 
     public changeHands() {
         this.changeHandsHandeler()
+    }
+
+    public addShootComponent() {
+        this.factory.needAddShootComponent = true
+        this.factory.drones.forEach(value => {
+            value.addShootComponent()
+        })
     }
 }
 
 export class LevelSystem implements ISystem {
     private dt = 0
     private levelController: LevelContoller
+
 
     public constructor() {
         this.levelController = new LevelContoller()
@@ -109,5 +137,17 @@ export class LevelSystem implements ISystem {
 
     setChangeHandsHandeler(param: () => void) {
         this.levelController.changeHandsHandeler = param
+    }
+
+    public addShootComponent() {
+        this.levelController.addShootComponent()
+    }
+
+    public startGame() {
+        this.levelController.startGame()
+    }
+
+    public setSkyBox(skyBox:Skybox) {
+        this.levelController.skyBox = skyBox
     }
 }
