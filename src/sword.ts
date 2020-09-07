@@ -15,7 +15,7 @@ export class Sword extends Entity {
     private takeHandler
     private pistol: Entity = null;
     public taken: boolean = false;
-    private takenPistol: boolean = false;
+    takenPistol: boolean = false;
     public isLaserOn = false
     isStartingMoveLaser: boolean = false;
 

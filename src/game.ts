@@ -29,6 +29,14 @@ levelSystem.setChangeHandsHandeler(() => {
 levelSystem.setPistolKillHandeler(() => {
     sword.pistolKill()
 })
+
+const input = Input.instance
+input.subscribe("BUTTON_DOWN", ActionButton.POINTER, false, (e) => {
+    if (sword.takenPistol) {
+        sword.pistolKill()
+    }
+})
+
 let userData = null
 
 function hashCode(str) {
