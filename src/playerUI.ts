@@ -21,6 +21,7 @@ export class PlayerUI {
     private handsBtn: UIImage
     private isOpenedMenu: boolean = false
     private uiUrl: UIText;
+    private isCanChangeHands = false
 
     constructor(levelController: LevelContoller) {
         this.levelContoller = levelController
@@ -246,6 +247,7 @@ export class PlayerUI {
     showQR(pin: string) {
         this.uiPin.value = "PIN: " + pin.toString()
         this.qrPopup.visible = this.uiPin.visible = this.uiUrl.visible = true
+
     }
 
     closeMenu() {
