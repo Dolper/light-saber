@@ -56,7 +56,8 @@ export class LevelContoller {
         const currentLevel = this.level.read()
         for (let i = 0; i < currentLevel; i++) {
             const points = []
-            for (let j = 0; j < Tools.getRandomInt(3, 7 + (currentLevel * 2)); j++) {
+            points[0] = new Vector3(16, 20, 16)
+            for (let j = 1; j < Tools.getRandomInt(3, 7 + (currentLevel * 2)); j++) {
                 points[j] = new Vector3(Tools.getRandomInt(3, 29), Tools.getRandomInt(0, 6+currentLevel), Tools.getRandomInt(3, 29))
             }
 

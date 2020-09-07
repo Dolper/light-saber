@@ -70,8 +70,7 @@ export class Sword extends Entity {
     }
 
     addPistol() {
-        this.pistol = new Entity()
-        this.pistol.addComponent(new Transform({
+        this.pistol.addComponentOrReplace(new Transform({
             position: new Vector3(16, 1.5, 16),
             scale: new Vector3(1.5, 1.5, 1.5)
         }))

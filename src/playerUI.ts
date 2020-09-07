@@ -21,6 +21,7 @@ export class PlayerUI {
     private handsBtn: UIImage
     private isOpenedMenu: boolean = false
     private uiUrl: UIText;
+    private isCanChangeHands = false
 
     constructor(levelController: LevelContoller) {
         this.levelContoller = levelController
@@ -120,7 +121,7 @@ export class PlayerUI {
 
         this.uiUrl = new UIText(this.canvas)
         this.uiUrl.color = Color4.Gray()
-        this.uiUrl.fontSize = 20
+        this.uiUrl.fontSize = 12
         this.uiUrl.width = 120
         this.uiUrl.height = 30
         this.uiUrl.vAlign = "bottom"
@@ -246,6 +247,7 @@ export class PlayerUI {
     showQR(pin: string) {
         this.uiPin.value = "PIN: " + pin.toString()
         this.qrPopup.visible = this.uiPin.visible = this.uiUrl.visible = true
+
     }
 
     closeMenu() {
