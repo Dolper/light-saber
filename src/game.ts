@@ -81,6 +81,10 @@ function connectSocket(pin) {
             data: userData,
             pin: pin
         }))
+
+        levelSystem.setServerSendHandler((data) => {
+            socket.send(JSON.stringify(data))
+        })
     }
 }
 
