@@ -16,6 +16,8 @@ export class Sword extends Entity {
     private pistol: Entity = null;
     public taken: boolean = false;
     private takenPistol: boolean = false;
+    public isLaserOn = false
+    isStartingMoveLaser: boolean = false;
 
     constructor(takeHandler) {
         super("Sword")
@@ -118,15 +120,9 @@ export class Sword extends Entity {
         this.addPistol()
     }
 
-    private isLaserOn = true
-
     switch() {
-        if (this.isLaserOn) {
-            this.swordLight.getComponent(Transform).scale.y = 0.03
-        } else {
-            this.swordLight.getComponent(Transform).scale.y = 1
-        }
-        this.isLaserOn = !this.isLaserOn
+        // this.isLaserOn = !this.isLaserOn
+        this.isStartingMoveLaser = true
     }
 
     public changeHands(change = true) {
@@ -146,12 +142,11 @@ export class SaberSystem implements ISystem {
     private dt = 0
     private timer = 0
     private swordBase: Entity
-    private sword: Entity
+    private sword: Sword
     private swordLight: Entity
-    private isStarted = false
-    private isPlaying = false
+    private isMoveLaserComplete = false
+    private isSlowPlaying = false
     private isFastPlaying = false
-    private isCanStart = false
     private clipStart: AudioClip
     private clipSlow: AudioClip
     private clipsFast
@@ -162,8 +157,10 @@ export class SaberSystem implements ISystem {
     private sourceStart: AudioSource
     private sourceSlow: AudioSource
     private sourcesFast
-    private lastX = 0
-    private lastY = 0
+    private lastRotation:Quaternion = null
+    private timerSlowPlaying = 0;
+    private timerFastPlaying = 0;
+    private timerRayCasting: number = 0;
 
     constructor(sword: Sword) {
         log("Saber system init")
@@ -255,55 +252,75 @@ export class SaberSystem implements ISystem {
 
     update(dt: number) {
         this.dt += dt
+        this.timerRayCasting += dt
         this.timer += dt
+        this.timerSlowPlaying += dt
+        this.timerFastPlaying += dt
 
-        if (this.isCanStart) {
-            if (this.swordLight.getComponent(Transform).scale.y <= 1)
-                this.swordLight.getComponent(Transform).scale.y += dt * 2
-            else this.isCanStart = false
+        if (this.sword.isLaserOn && this.timerRayCasting > 0.1) {
+            this.rayCasting()
+            this.timerRayCasting = 0
+        }
+
+        if (this.sword.isStartingMoveLaser) {
+            if (this.sword.isLaserOn) {
+                if (this.swordLight.getComponent(Transform).scale.y > 0.21)
+                    this.swordLight.getComponent(Transform).scale.y -= dt
+                else {
+                    this.swordLight.getComponent(Transform).scale.y = 0.185
+                    this.sword.isStartingMoveLaser = false
+                    this.sword.isLaserOn = false
+                }
+            } else {
+                if (this.swordLight.getComponent(Transform).scale.y <= 1)
+                    this.swordLight.getComponent(Transform).scale.y += dt
+                else {
+                    this.sword.isStartingMoveLaser = false
+                    this.sword.isLaserOn = true
+                }
+            }
         }
         if (this.dt > 3) {
-            this.rayCasting()
-            if (!this.isStarted && this.isCanStart) {
-                this.isCanStart = true
+            if (!this.isMoveLaserComplete && this.sword.isStartingMoveLaser) {
                 this.sourceStart.playing = true
                 this.sourceStart.loop = false
                 this.swordBase.addComponentOrReplace(this.sourceStart)
-                this.isStarted = true
+                this.isMoveLaserComplete = true
             }
+            this.dt = 0
         }
-        if (this.dt > 4.5) {
-            if (!this.isPlaying) {
-                this.sourceSlow.playing = true
-                this.sourceSlow.loop = true
-                this.sourceSlow.volume = 0.2
-                this.swordLight.addComponent(this.sourceSlow)
-                this.isPlaying = true
-            }
-        }
-
-        let x = Math.abs(this.sword.getComponent(Transform).rotation.x)
-        let y = Math.abs(this.sword.getComponent(Transform).rotation.y)
-
-        if (this.dt > 3.2 &&
-            ((x > this.lastX + 0.1 || x < this.lastX - 0.1) || (y > this.lastY + 0.1 || y < this.lastY - 0.1)) &&
-            !this.isFastPlaying) {
-            let rnd = Tools.getRandomInt(0, 3)
-            this.sourcesFast[rnd].playOnce()
-            this.sourcesFast[rnd].volume = 0.5
-            this.swordBase.addComponentOrReplace(this.sourcesFast[rnd])
-            this.isFastPlaying = true
-        }
+        // if (this.timerSlowPlaying > 4.5) {
+        //     if (!this.isSlowPlaying) {
+        //         this.sourceSlow.playing = true
+        //         this.sourceSlow.loop = true
+        //         this.sourceSlow.volume = 0.2
+        //         this.swordLight.addComponent(this.sourceSlow)
+        //         this.isSlowPlaying = true
+        //         this.timerSlowPlaying = 0
+        //     }
+        // }
 
         if (this.timer > 0.5) {
-            if (this.lastX != x && this.dt > 3) {
-                this.isCanStart = true
+            if (this.lastRotation != null) {
+                const diff = Quaternion.Angle(this.sword.swordRotation, this.lastRotation)
+                // log('sword move',diff)
+                if (diff > 5 && !this.sword.isLaserOn) {
+                    this.sword.isStartingMoveLaser = true
+                    // this.isSlowPlaying = false
+                }
+                if (this.timerFastPlaying > 2 && !this.isFastPlaying && diff > 3) {
+                    // log('fast', this.timerFastPlaying, diff)
+                    let rnd = Tools.getRandomInt(0, 3)
+                    this.sourcesFast[rnd].playOnce()
+                    this.sourcesFast[rnd].volume = 0.5
+                    this.swordBase.addComponentOrReplace(this.sourcesFast[rnd])
+                    this.isFastPlaying = true
+                    this.timerFastPlaying = 0
+                }
             }
-
             this.timer = 0
-            this.lastX = x
-            this.lastY = y
             this.isFastPlaying = false
         }
+        this.lastRotation = this.sword.swordRotation.clone()
     }
 }
