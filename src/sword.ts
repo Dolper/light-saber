@@ -10,10 +10,20 @@ export class Sword extends Entity {
     public swordLight: Entity
     public swordBase: Entity
     public swordRotation: Quaternion
-    public isRightHand: true    
+    public isRightHand: true  
+    private pistol: Entity  
 
     constructor() {
         super("Sword")
+
+        this.pistol = new Entity()
+        this.pistol.addComponent(new Transform({
+            position: new Vector3(16, 1.5, 16),
+            scale: new Vector3(0.0001, 0.0001, 0.0001)
+        }))
+        this.pistol.addComponent(new GLTFShape("pistol.glb"))
+        engine.addEntity(this.pistol)
+
 
         this.swordRotation = new Quaternion()
         this.addComponent(new Transform({
@@ -58,24 +68,22 @@ export class Sword extends Entity {
     }
 
     addPistol() {
-        let pistol = new Entity()
-        pistol.addComponent(new Transform({
+        this.pistol.addComponentOrReplace(new Transform({
             position: new Vector3(16, 1.5, 16),
-            scale: new Vector3(1.5, 1.5, 1.5)
+            scale: new Vector3(1.3, 1.3, 1.3)
         }))
-        pistol.addComponent(new GLTFShape("pistol.glb"))
-        pistol.addComponent(new utils.KeepRotatingComponent(Quaternion.Euler(15, 90, 0)))
-        pistol.addComponent(
+        this.pistol.addComponent(new utils.KeepRotatingComponent(Quaternion.Euler(15, 90, 0)))
+        this.pistol.addComponent(
             new OnPointerDown(() => {
                 let x
                 if(this.isRightHand) x = -0.5
                 else x = 0.5
-                pistol.getComponent(Transform).position = new Vector3(x, 0.55, 0.95)
-                pistol.getComponent(Transform).rotation = Quaternion.Euler(0, 270, 0)
-                pistol.getComponent(Transform).scale = new Vector3(0.8, 0.8, 0.8)
-                pistol.setParent(Attachable.PLAYER)
-                pistol.getComponent(utils.KeepRotatingComponent).stop()
-                pistol.removeComponent(utils.KeepRotatingComponent)
+                this.pistol.getComponent(Transform).position = new Vector3(x, 0.55, 0.95)
+                this.pistol.getComponent(Transform).rotation = Quaternion.Euler(0, 270, 0)
+                this.pistol.getComponent(Transform).scale = new Vector3(0.8, 0.8, 0.8)
+                this.pistol.setParent(Attachable.PLAYER)
+                this.pistol.getComponent(utils.KeepRotatingComponent).stop()
+                this.pistol.removeComponent(utils.KeepRotatingComponent)
                 },
                 {
                     button: ActionButton.PRIMARY,
@@ -84,7 +92,7 @@ export class Sword extends Entity {
                     distance: 4,
                 })
         )
-        engine.addEntity(pistol)
+        
     }
 
     take() {
