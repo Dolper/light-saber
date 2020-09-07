@@ -76,7 +76,11 @@ export class Skybox {
     }
 
     public setBounds(value) {
-        this.collider.getComponent(GLTFShape).visible=value
+        if (value) {
+            engine.addEntity(this.collider)
+        } else {
+            engine.removeEntity(this.collider)
+        }
     }
     public setLight(value) {
         this.light.getComponent(GLTFShape).visible=value

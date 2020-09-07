@@ -3,6 +3,10 @@ import utils from "../node_modules/decentraland-ecs-utils/index"
 import {PathData} from "./pathData"
 import {PatrolPath} from "./pathData"
 
+const invisibleSphere = new SphereShape()
+invisibleSphere.visible = false
+invisibleSphere.isPointerBlocker = false
+
 export class Drone extends Entity {
     path: Path3D
     public isLive: boolean
@@ -31,22 +35,14 @@ export class Drone extends Entity {
         if (needAddShootComponent) this.addShootComponent()
         this.getComponent(GLTFShape).withCollisions = false
 
-        // create trigger area object, setting size and relative position
-        let triggerBox = new utils.TriggerBoxShape(new Vector3(2, 2, 2), Vector3.Zero())
-
         this.rayTrigger = new Entity("droneRayTrigger")
-        this.rayTrigger.addComponentOrReplace(new Transform({
-            scale: new Vector3(0.001, 0.001, 0.001)
+        this.rayTrigger.addComponent(invisibleSphere)
+        this.rayTrigger.addComponent(new Transform({
+            scale: new Vector3(0.6, 0.6, 0.6)
         }))
-        this.rayTrigger.addComponent(new SphereShape())
-        this.rayTrigger.getComponent(SphereShape).visible = false
-        this.rayTrigger.getComponent(SphereShape).isPointerBlocker = false
-        this.rayTrigger.addComponentOrReplace(new Transform({
-            scale: new Vector3(0.8, 0.8, 0.8)
-        }))
-        this.rayTrigger.setParent(this)
 
-        //create trigger for entity
+        // create trigger area object, setting size and relative position
+        let triggerBox = new utils.TriggerSphereShape(1.5, Vector3.Zero())
         this.addComponent(
             new utils.TriggerComponent(
                 triggerBox, //shape
@@ -55,8 +51,6 @@ export class Drone extends Entity {
                 null,
                 null,
                 () => {
-                    //engine.removeEntity(this)
-                    log("BANG")
                     if (this.isLive) this.smashPlayer()
                 }, //onTriggerEnter
                 null, false //onCameraExit
@@ -65,6 +59,7 @@ export class Drone extends Entity {
         this.addComponent(new PathData(this.path))
         this.addComponent(new Billboard())
         engine.addEntity(this)
+        this.rayTrigger.setParent(this)
         log("Dron added")
     }
 
@@ -104,6 +99,7 @@ export class Drone extends Entity {
     }
 
     private die() {
+        this.rayTrigger.setParent(null)
         let clip = new AudioClip("sfxFight.mp3")
         let source = new AudioSource(clip)
         source.playing = true
