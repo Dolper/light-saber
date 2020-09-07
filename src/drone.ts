@@ -27,18 +27,7 @@ export class Drone extends Entity {
 
         engine.addSystem(this.PatrolPath)
         this.addComponent(new GLTFShape("drone.glb"))
-        this.addComponent(
-            new OnPointerDown(() => {
-                    log('kill', this)
-                    if (this.isLive) this.kill()
-                },
-                {
-                    button: ActionButton.ANY,
-                    showFeedback: true,
-                    hoverText: "SHOOT",
-                    distance: 14,
-                })
-        )
+
         this.getComponent(GLTFShape).withCollisions = false
 
         // create trigger area object, setting size and relative position
@@ -76,6 +65,21 @@ export class Drone extends Entity {
         this.addComponent(new Billboard())
         engine.addEntity(this)
         log("Dron added")
+    }
+
+    public addShootComponent() {
+        this.addComponent(
+            new OnPointerDown(() => {
+                    log('kill', this)
+                    if (this.isLive) this.kill()
+                },
+                {
+                    button: ActionButton.ANY,
+                    showFeedback: true,
+                    hoverText: "SHOOT",
+                    distance: 50,
+                })
+        )
     }
 
     private smashPlayer() {

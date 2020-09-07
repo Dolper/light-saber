@@ -12,8 +12,12 @@ let pin = Tools.getRandomInt(0, 10) + "" + Tools.getRandomInt(0, 10) + "" + d + 
 // pin='0002'
 
 const levelSystem = new LevelSystem()
-let sword = new Sword(()=>{
-    levelSystem.showQR(pin)
+let sword = new Sword((type)=>{
+    if(type == 'sword') {
+        levelSystem.showQR(pin)
+    } else if (type == 'pistol') {
+        levelSystem.addShootComponent()
+    }
 })
 levelSystem.setChangeHandsHandeler(()=>{
     sword.changeHands()

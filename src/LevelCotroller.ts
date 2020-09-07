@@ -78,6 +78,12 @@ export class LevelContoller {
     public changeHands() {
         this.changeHandsHandeler()
     }
+
+    public addShootComponent() {
+        this.factory.drones.forEach(value => {
+            value.addShootComponent()
+        })
+    }
 }
 
 export class LevelSystem implements ISystem {
@@ -108,5 +114,9 @@ export class LevelSystem implements ISystem {
 
     setChangeHandsHandeler(param: () => void) {
         this.levelController.changeHandsHandeler = param
+    }
+
+    public addShootComponent() {
+        this.levelController.addShootComponent()
     }
 }
