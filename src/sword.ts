@@ -243,7 +243,7 @@ export class SaberSystem implements ISystem {
                         const drone = entity.getParent()
                         if (drone != null && drone instanceof Drone) {
                             log('kill drone', drone)
-                            drone.kill()
+                            drone.kill('sword')
                         }
                     }
                 }

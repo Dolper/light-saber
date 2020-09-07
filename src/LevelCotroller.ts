@@ -33,7 +33,11 @@ export class LevelContoller {
     private droneFactoryHandler(event: any) {
         log('LevelContoller', event.event)
         if (event.event == 'kill') {
-            this.score.increase(event.drone.price)
+            let addScore = 10
+            if (event.weapon == 'sword') {
+                addScore = 25
+            }
+            this.score.increase(addScore)
         } else if (event.event == 'smashPlayer') {
             this.health.decrease(event.drone.attack)
             this.playerUI.damage()

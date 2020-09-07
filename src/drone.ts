@@ -11,7 +11,6 @@ export class Drone extends Entity {
     path: Path3D
     public isLive: boolean
     public attack = 0.05
-    public price = 10
     public isExployed = false
     private PatrolPath: PatrolPath
     private handler
@@ -67,7 +66,7 @@ export class Drone extends Entity {
         this.addComponent(
             new OnPointerDown(() => {
                     log('kill', this)
-                    if (this.isLive) this.kill()
+                    if (this.isLive) this.kill('pistol')
                 },
                 {
                     button: ActionButton.ANY,
@@ -79,7 +78,7 @@ export class Drone extends Entity {
     }
 
     private smashPlayer() {
-        const explosionPosition = this.die()
+        const explosionPosition = this.die(false)
 
         this.handler({
             event: 'smashPlayer',
@@ -88,17 +87,18 @@ export class Drone extends Entity {
         })
     }
 
-    public kill() {
-        const explosionPosition = this.die()
+    public kill(weapon) {
+        const explosionPosition = this.die(true)
         log(explosionPosition)
         this.handler({
             event: 'kill',
+            weapon: weapon,
             drone: this,
             pos: explosionPosition
         })
     }
 
-    private die() {
+    private die(showExplosion) {
         this.rayTrigger.setParent(null)
         let clip = new AudioClip("sfxFight.mp3")
         let source = new AudioSource(clip)
@@ -106,9 +106,11 @@ export class Drone extends Entity {
         source.loop = false
         source.volume = 1
         this.addComponentOrReplace(source)
-
-        const explosionPosition = this.getComponent(Transform).position.clone()
-        explosionPosition.y += 0.5
+        let explosionPosition = null
+        if (showExplosion) {
+            explosionPosition = this.getComponent(Transform).position.clone()
+            explosionPosition.y += 0.5
+        }
 
         this.isLive = false
         this.getComponent(GLTFShape).visible = false

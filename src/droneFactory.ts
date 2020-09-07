@@ -23,14 +23,16 @@ export class DroneFactory {
     private droneHandler(event: any) {
         log('DroneFactory', event.event, event.pos)
         if (event.event == 'kill' || event.event == 'smashPlayer') {
-            const explosion = new Entity()
-            explosion.addComponent(this.explosionShape)
-            explosion.addComponent(new Transform({
-                position: event.pos,
-                scale: new Vector3(0.02, 0.02, 0.02)
-            }))
-            engine.addEntity(explosion)
-            this.explosions.push({dt: 0, explosion: explosion, drone: event.drone})
+            if (event.pos != null) {
+                const explosion = new Entity()
+                explosion.addComponent(this.explosionShape)
+                explosion.addComponent(new Transform({
+                    position: event.pos,
+                    scale: new Vector3(0.02, 0.02, 0.02)
+                }))
+                engine.addEntity(explosion)
+                this.explosions.push({dt: 0, explosion: explosion, drone: event.drone})
+            }
         }
         this.levelHandler(event)
     }
