@@ -43,15 +43,15 @@ export class PlayerUI {
         this.uiBackMenu.visible = false
 
         this.closeBtn = new UIImage(this.canvas, new Texture("uiClose.png"))
-        this.closeBtn.width = "233"
-        this.closeBtn.height = "59"
+        this.closeBtn.width = "180"
+        this.closeBtn.height = "45"
         this.closeBtn.sourceWidth = 233
         this.closeBtn.sourceHeight = 59
-        this.closeBtn.positionY = 20
+        this.closeBtn.positionY = 10
         this.closeBtn.positionX = 0
         this.closeBtn.vAlign = "bottom"
         this.closeBtn.hAlign = "center"
-        this.closeBtn.visible = true
+        this.closeBtn.visible = false
         this.closeBtn.onClick = new OnClick(() => {
             this.isOpenedMenu = !this.isOpenedMenu
             this.uiBackMenu.visible = this.isOpenedMenu
@@ -62,11 +62,11 @@ export class PlayerUI {
         })
 
         this.menuBtn = new UIImage(this.canvas, new Texture("menuBtn.png"))
-        this.menuBtn.width = "233"
-        this.menuBtn.height = "59"
+        this.menuBtn.width = "180"
+        this.menuBtn.height = "45"
         this.menuBtn.sourceWidth = 233
         this.menuBtn.sourceHeight = 59
-        this.menuBtn.positionY = 20
+        this.menuBtn.positionY = 10
         this.menuBtn.positionX = 0
         this.menuBtn.vAlign = "bottom"
         this.menuBtn.hAlign = "center"

@@ -19,6 +19,14 @@ export class Sword extends Entity {
 
         this.takeHandler = takeHandler
 
+        this.pistol = new Entity()
+        this.pistol.addComponent(new Transform({
+            position: new Vector3(16, 1.5, 16),
+            scale: new Vector3(0.0001, 0.0001, 0.0001)
+        }))
+        this.pistol.addComponent(new GLTFShape("pistol.glb"))
+        engine.addEntity(this.pistol)
+
         this.swordRotation = new Quaternion()
         this.addComponent(new Transform({
             position: new Vector3(16, 1.5, 16),
@@ -67,7 +75,6 @@ export class Sword extends Entity {
             position: new Vector3(16, 1.5, 16),
             scale: new Vector3(1.5, 1.5, 1.5)
         }))
-        this.pistol.addComponent(new GLTFShape("pistol.glb"))
         this.pistol.addComponent(new utils.KeepRotatingComponent(Quaternion.Euler(15, 90, 0)))
         this.pistol.addComponent(
             new OnPointerDown(() => {
@@ -88,7 +95,6 @@ export class Sword extends Entity {
                     distance: 4,
                 })
         )
-        engine.addEntity(this.pistol)
     }
 
     take() {
