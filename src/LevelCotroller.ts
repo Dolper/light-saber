@@ -22,6 +22,7 @@ export class LevelContoller {
     health = new ui.UIBar(1, -30, 60, Color4.Red(), BarStyles.ROUNDSILVER, 1)
     healthLabel = new ui.CornerLabel('Health:', -170, 55)
     changeHandsHandeler: () => void;
+    pistolKillHandeler: () => void;
 
     private gameStarted = false
 
@@ -36,6 +37,9 @@ export class LevelContoller {
             let addScore = 10
             if (event.weapon == 'sword') {
                 addScore = 25
+            }
+            if (event.weapon == 'pistol') {
+                this.pistolKillHandeler()
             }
             this.score.increase(addScore)
         } else if (event.event == 'smashPlayer') {
@@ -153,5 +157,9 @@ export class LevelSystem implements ISystem {
 
     public setSkyBox(skyBox:Skybox) {
         this.levelController.skyBox = skyBox
+    }
+
+    setPistolKillHandeler(param: () => void) {
+        this.levelController.pistolKillHandeler = param
     }
 }

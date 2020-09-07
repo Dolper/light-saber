@@ -26,6 +26,9 @@ levelSystem.setChangeHandsHandeler(() => {
     sword.changeHands()
 })
 
+levelSystem.setPistolKillHandeler(() => {
+    sword.pistolKill()
+})
 let userData = null
 
 function hashCode(str) {
@@ -62,6 +65,8 @@ function connectSocket(pin) {
                     sword.switch()
                 } else if (msg.cmd == 'changeHands') {
                     sword.changeHands()
+                } else if (msg.cmd == 'changeColor') {
+                    sword.changeColor()
                 }
             }
         } catch (error) {
