@@ -149,14 +149,16 @@ export class Sword extends Entity {
     ]
     currentColor = 0
 
-    changeColor(color=null) {
-        if(color == null) {
+    changeColor(color = -1) {
+        if(color < 0) {
             this.currentColor += 1
+        } else {
+            this.currentColor = color
         }
-        this.currentColor = color
         if (this.currentColor >= this.colors.length) {
             this.currentColor = 0
         }
+        log('change color', this.currentColor)
         this.swordLight.addComponentOrReplace(this.colors[this.currentColor])
     }
 }
