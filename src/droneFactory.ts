@@ -4,7 +4,7 @@ export class DroneFactory {
     public drones: Drone[] = []
     private explosions = []
     private levelHandler
-    private explosionShape = new GLTFShape("bang.glb")
+    private explosionShape = new GLTFShape("models/bang.glb")
     public needAddShootComponent = false
 
     constructor(levelHandler) {

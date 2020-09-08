@@ -4,7 +4,7 @@ export class Skybox {
 
     constructor() {
         this.light = new Entity()
-        this.light.addComponent(new GLTFShape("light.glb"))
+        this.light.addComponent(new GLTFShape("models/light.glb"))
         this.light.addComponent(new Transform({
             position: new Vector3(16, 0.1, 16),
             scale: new Vector3(1, 2, 1)
@@ -13,7 +13,7 @@ export class Skybox {
         engine.addEntity(this.light)
 
         this.collider = new Entity()
-        this.collider.addComponent(new GLTFShape("collider.glb"))
+        this.collider.addComponent(new GLTFShape("models/collider.glb"))
         this.collider.addComponent(new Transform({
             position: new Vector3(16, 0, 16),
             scale: new Vector3(2, 2, 2)
@@ -23,7 +23,7 @@ export class Skybox {
 
 
         let logo = new Entity() // Billoard 
-        logo.addComponent(new GLTFShape("logo.glb"))
+        logo.addComponent(new GLTFShape("models/logo.glb"))
         logo.addComponent(
             new Transform({
                 position: new Vector3(16, 16, 16),
@@ -34,7 +34,7 @@ export class Skybox {
         logo.addComponent(new Billboard())
         engine.addEntity(logo)
 
-        let clip = new AudioClip("sound.mp3")
+        let clip = new AudioClip("sfx/sound.mp3")
         let source = new AudioSource(clip)
         source.playing = true
         source.loop = true
@@ -42,7 +42,7 @@ export class Skybox {
 
 
         let skyboxEntity = new Entity()
-        skyboxEntity.addComponent(new GLTFShape("skybox.glb"))
+        skyboxEntity.addComponent(new GLTFShape("models/skybox.glb"))
         skyboxEntity.addComponent(new Transform({
             position: new Vector3(16, -3, 16),
             scale: new Vector3(0.5, 1, 0.5)

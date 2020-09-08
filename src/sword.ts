@@ -33,10 +33,10 @@ export class Sword extends Entity {
             scale: new Vector3(0.0001, 0.0001, 0.0001)
         }))
         this.pistolFire = new Entity()
-        this.pistolFire.addComponent(new GLTFShape("pistolFire.glb"))
+        this.pistolFire.addComponent(new GLTFShape("models/pistolFire.glb"))
         this.pistolFire.addComponent(new Transform())
         this.pistolBase = new Entity()
-        this.pistolBase.addComponent(new GLTFShape("pistol.glb"))
+        this.pistolBase.addComponent(new GLTFShape("models/pistol.glb"))
         this.pistolFire.setParent(this.pistol)
         this.pistolBase.setParent(this.pistol)
         this.pistolSystem = new PistolSystem(this.pistolFire)
@@ -56,7 +56,7 @@ export class Sword extends Entity {
             position: new Vector3(0, 0, 0),
             scale: new Vector3(1, 1, 1)
         }))
-        this.swordBase.addComponent(new GLTFShape("swordBase.glb"))
+        this.swordBase.addComponent(new GLTFShape("models/swordBase.glb"))
         this.swordBase.addComponent(
             new OnPointerDown(() => {
                 this.take()
@@ -154,10 +154,10 @@ export class Sword extends Entity {
     }
 
     colors = [
-        new GLTFShape("swordLight.glb"),
-        new GLTFShape("swordLightG.glb"),
-        new GLTFShape("swordLightR.glb"),
-        new GLTFShape("swordLightM.glb")
+        new GLTFShape("models/swordLight.glb"),
+        new GLTFShape("models/swordLightG.glb"),
+        new GLTFShape("models/swordLightR.glb"),
+        new GLTFShape("models/swordLightM.glb")
     ]
     currentColor = 0
 
@@ -223,25 +223,25 @@ export class SaberSystem implements ISystem {
         this.sourcesFast = []
         this.clipsFast = []
 
-        let music = new AudioClip("sound.mp3")
+        let music = new AudioClip("sfx/sound.mp3")
         let sourceMusic = new AudioSource(music)
         sourceMusic.playing = true
         sourceMusic.loop = true
         this.sword.addComponentOrReplace(sourceMusic)
 
-        this.clipStart = new AudioClip("sfxStart.mp3")
+        this.clipStart = new AudioClip("sfx/sfxStart.mp3")
         this.sourceStart = new AudioSource(this.clipStart)
 
-        this.clipSlow = new AudioClip("sfxSlow.mp3")
+        this.clipSlow = new AudioClip("sfx/sfxSlow.mp3")
         this.sourceSlow = new AudioSource(this.clipSlow)
 
-        this.clipsFast[0] = new AudioClip("sfxFast1.mp3")
+        this.clipsFast[0] = new AudioClip("sfx/sfxFast1.mp3")
         this.sourcesFast[0] = new AudioSource(this.clipsFast[0])
 
-        this.clipsFast[1] = new AudioClip("sfxFast2.mp3")
+        this.clipsFast[1] = new AudioClip("sfx/sfxFast2.mp3")
         this.sourcesFast[1] = new AudioSource(this.clipsFast[1])
 
-        this.clipsFast[2] = new AudioClip("sfxFast3.mp3")
+        this.clipsFast[2] = new AudioClip("sfx/sfxFast3.mp3")
         this.sourcesFast[2] = new AudioSource(this.clipsFast[2])
     }
 
@@ -380,7 +380,7 @@ export class PistolSystem implements ISystem {
             this.dt += dt
         }
 
-        if(this.dt>0.5)
+        if(this.dt>0.4)
         {
             this.isLive = false
             this.fire.getComponent(Transform).position = new Vector3(0,0,0)

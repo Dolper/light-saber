@@ -82,14 +82,15 @@ export class LevelContoller {
     public nextLevel() {
         log("nextLevel")
         this.level.increase(1)
-        const currentLevel = this.level.read()
+        let currentLevel = this.level.read()
         for (let i = 0; i < currentLevel; i++) {
             const points = []
             points[0] = new Vector3(16, 30, 16)
             for (let j = 1; j < Tools.getRandomInt(3, 7 + (currentLevel * 2)); j++) {
-                points[j] = new Vector3(Tools.getRandomInt(3, 29), Tools.getRandomInt(0, 6+currentLevel), Tools.getRandomInt(3, 29))
+                if(currentLevel>10) currentLevel = 10
+                points[j] = new Vector3(Tools.getRandomInt(5, 27), Tools.getRandomInt(0, 6+currentLevel), Tools.getRandomInt(5, 27))
             }
-
+            points.push(new Vector3(Tools.getRandomInt(7, 25), Tools.getRandomInt(0, 7), Tools.getRandomInt(7, 25)))
             points.push(camera.position)
             const myPath = new Path3D(points)
             this.factory.Add(myPath, currentLevel)

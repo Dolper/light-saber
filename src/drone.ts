@@ -29,7 +29,7 @@ export class Drone extends Entity {
         this.PatrolPath = new PatrolPath(this, this.path, speed)
 
         engine.addSystem(this.PatrolPath)
-        this.addComponent(new GLTFShape("drone.glb"))
+        this.addComponent(new GLTFShape("models/drone.glb"))
 
         if (needAddShootComponent) this.addShootComponent()
         this.getComponent(GLTFShape).withCollisions = false
@@ -100,7 +100,7 @@ export class Drone extends Entity {
 
     private die(showExplosion) {
         this.rayTrigger.setParent(null)
-        let clip = new AudioClip("sfxFight.mp3")
+        let clip = new AudioClip("sfx/sfxFight.mp3")
         let source = new AudioSource(clip)
         source.playing = true
         source.loop = false

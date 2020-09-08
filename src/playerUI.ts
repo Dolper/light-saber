@@ -35,7 +35,7 @@ export class PlayerUI {
     }
 
     private initMenu() {
-        this.uiBackMenu = new UIImage(this.canvas, new Texture("menu.png"))
+        this.uiBackMenu = new UIImage(this.canvas, new Texture("textures/menu.png"))
         this.uiBackMenu.width = "800"
         this.uiBackMenu.height = "500"
         this.uiBackMenu.sourceWidth = 800
@@ -45,7 +45,7 @@ export class PlayerUI {
         this.uiBackMenu.vAlign = "center"
         this.uiBackMenu.visible = false
 
-        this.closeBtn = new UIImage(this.canvas, new Texture("uiClose.png"))
+        this.closeBtn = new UIImage(this.canvas, new Texture("textures/uiClose.png"))
         this.closeBtn.width = "160"
         this.closeBtn.height = "40"
         this.closeBtn.sourceWidth = 220
@@ -59,7 +59,7 @@ export class PlayerUI {
             this.closeMenu()
         })
 
-        this.menuBtn = new UIImage(this.canvas, new Texture("menuBtn.png"))
+        this.menuBtn = new UIImage(this.canvas, new Texture("textures/menuBtn.png"))
         this.menuBtn.width = "160"
         this.menuBtn.height = "40"
         this.menuBtn.sourceWidth = 220
@@ -73,7 +73,7 @@ export class PlayerUI {
             this.closeMenu()
         })
 
-        this.discordBtn = new UIImage(this.canvas, new Texture("discordBtn.png"))
+        this.discordBtn = new UIImage(this.canvas, new Texture("textures/discordBtn.png"))
         this.discordBtn.width = "99"
         this.discordBtn.height = "99"
         this.discordBtn.sourceWidth = 99
@@ -87,7 +87,7 @@ export class PlayerUI {
             openExternalURL("https://discord.gg/J4ASyB6")
         })
 
-        this.privacyBtn = new UIImage(this.canvas, new Texture("privacyBtn.png"))
+        this.privacyBtn = new UIImage(this.canvas, new Texture("textures/privacyBtn.png"))
         this.privacyBtn.width = "200"
         this.privacyBtn.height = "50"
         this.privacyBtn.sourceWidth = 245
@@ -101,7 +101,7 @@ export class PlayerUI {
             openExternalURL("http://blog.dapp-craft.com/star-mars-prv")
         })
 
-        this.handsBtn = new UIImage(this.canvas, new Texture("handsBtn.png"))
+        this.handsBtn = new UIImage(this.canvas, new Texture("textures/handsBtn.png"))
         this.handsBtn.width = "200"
         this.handsBtn.height = "50"
         this.handsBtn.sourceWidth = 245
@@ -118,7 +118,7 @@ export class PlayerUI {
     }
 
     private initQR() {
-        this.qrPopup = new UIImage(this.canvas, new Texture("qrPopup.png"))
+        this.qrPopup = new UIImage(this.canvas, new Texture("textures/qrPopup.png"))
         this.qrPopup.width = "271"
         this.qrPopup.height = "303"
         this.qrPopup.sourceWidth = 271
@@ -154,7 +154,7 @@ export class PlayerUI {
     }
 
     private initDamage() {
-        this.uiArrowDown = new UIImage(this.canvas, new Texture("Adown.png"))
+        this.uiArrowDown = new UIImage(this.canvas, new Texture("textures/Adown.png"))
         this.uiArrowDown.width = "267"
         this.uiArrowDown.height = "104"
         this.uiArrowDown.sourceWidth = 533
@@ -163,7 +163,7 @@ export class PlayerUI {
         this.uiArrowDown.vAlign = "bottom"
         this.uiArrowDown.visible = false
 
-        this.uiArrowTop = new UIImage(this.canvas, new Texture("Atop.png"))
+        this.uiArrowTop = new UIImage(this.canvas, new Texture("textures/Atop.png"))
         this.uiArrowTop.width = "267"
         this.uiArrowTop.height = "104"
         this.uiArrowTop.sourceWidth = 533
@@ -172,7 +172,7 @@ export class PlayerUI {
         this.uiArrowTop.vAlign = "top"
         this.uiArrowTop.visible = false
 
-        this.uiArrowLeft = new UIImage(this.canvas, new Texture("Aleft.png"))
+        this.uiArrowLeft = new UIImage(this.canvas, new Texture("textures/Aleft.png"))
         this.uiArrowLeft.width = "104"
         this.uiArrowLeft.height = "267"
         this.uiArrowLeft.sourceWidth = 208
@@ -181,7 +181,7 @@ export class PlayerUI {
         this.uiArrowLeft.hAlign = "left"
         this.uiArrowLeft.visible = false
 
-        this.uiArrowRight = new UIImage(this.canvas, new Texture("Aright.png"))
+        this.uiArrowRight = new UIImage(this.canvas, new Texture("textures/Aright.png"))
         this.uiArrowRight.width = "104"
         this.uiArrowRight.height = "267"
         this.uiArrowRight.sourceWidth = 208
@@ -192,7 +192,7 @@ export class PlayerUI {
     }
 
     public initGameOverUI() {
-        this.uiBackGround = new UIImage(this.canvas, new Texture("bgRed.png"))
+        this.uiBackGround = new UIImage(this.canvas, new Texture("textures/bgRed.png"))
         this.uiBackGround.width = "100%"
         this.uiBackGround.height = "100%"
         this.uiBackGround.sourceWidth = 1
@@ -201,7 +201,7 @@ export class PlayerUI {
         this.uiBackGround.vAlign = "bottom"
         this.uiBackGround.visible = false
 
-        this.uiGameOver = new UIImage(this.canvas, new Texture("gameover.png"))
+        this.uiGameOver = new UIImage(this.canvas, new Texture("textures/gameover.png"))
         this.uiGameOver.width = "462"
         this.uiGameOver.height = "117"
         this.uiGameOver.sourceWidth = 462
@@ -210,7 +210,7 @@ export class PlayerUI {
         this.uiGameOver.vAlign = "bottom"
         this.uiGameOver.visible = false
 
-        this.uiPlayAgain = new UIImage(this.canvas, new Texture("playagain.png"))
+        this.uiPlayAgain = new UIImage(this.canvas, new Texture("textures/playagain.png"))
         this.uiPlayAgain.width = "294"
         this.uiPlayAgain.height = "89"
         this.uiPlayAgain.sourceWidth = 294
