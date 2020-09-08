@@ -83,12 +83,16 @@ export class LevelContoller {
         log("nextLevel")
         this.level.increase(1)
         let currentLevel = this.level.read()
+        
+        let height = 0
+        if(currentLevel>10) height = 10
+        else height = currentLevel
+
         for (let i = 0; i < currentLevel; i++) {
             const points = []
             points[0] = new Vector3(16, 30, 16)
             for (let j = 1; j < Tools.getRandomInt(3, 7 + (currentLevel * 2)); j++) {
-                if(currentLevel>10) currentLevel = 10
-                points[j] = new Vector3(Tools.getRandomInt(5, 27), Tools.getRandomInt(0, 6+currentLevel), Tools.getRandomInt(5, 27))
+                points[j] = new Vector3(Tools.getRandomInt(5, 27), Tools.getRandomInt(0, 6+height), Tools.getRandomInt(5, 27))
             }
             points.push(new Vector3(Tools.getRandomInt(7, 25), Tools.getRandomInt(0, 7), Tools.getRandomInt(7, 25)))
             points.push(camera.position)
