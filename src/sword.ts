@@ -1,7 +1,7 @@
 import utils from "../node_modules/decentraland-ecs-utils/index"
-import {Tools} from "./tools"
+import { Tools } from "./tools"
 import "./entityExtension"
-import {Drone} from "./drone";
+import { Drone } from "./drone";
 
 const camera = Camera.instance
 const physicsCast = PhysicsCast.instance
@@ -13,11 +13,14 @@ export class Sword extends Entity {
     public swordRotation: Quaternion
     public isRightHand = false
     private takeHandler
-    private pistol: Entity = null;
+    private pistol: Entity
+    private pistolBase: Entity = null;
+    private pistolFire: Entity
     public taken: boolean = false;
     takenPistol: boolean = false;
     public isLaserOn = false
     isStartingMoveLaser: boolean = false;
+    private pistolSystem: PistolSystem
 
     constructor(takeHandler) {
         super("Sword")
@@ -29,7 +32,15 @@ export class Sword extends Entity {
             position: new Vector3(16, 1.5, 16),
             scale: new Vector3(0.0001, 0.0001, 0.0001)
         }))
-        this.pistol.addComponent(new GLTFShape("pistol.glb"))
+        this.pistolFire = new Entity()
+        this.pistolFire.addComponent(new GLTFShape("pistolFire.glb"))
+        this.pistolFire.addComponent(new Transform())
+        this.pistolBase = new Entity()
+        this.pistolBase.addComponent(new GLTFShape("pistol.glb"))
+        this.pistolFire.setParent(this.pistol)
+        this.pistolBase.setParent(this.pistol)
+        this.pistolSystem = new PistolSystem(this.pistolFire)
+        engine.addSystem(this.pistolSystem)
         engine.addEntity(this.pistol)
 
         this.swordRotation = new Quaternion()
@@ -48,8 +59,8 @@ export class Sword extends Entity {
         this.swordBase.addComponent(new GLTFShape("swordBase.glb"))
         this.swordBase.addComponent(
             new OnPointerDown(() => {
-                    this.take()
-                },
+                this.take()
+            },
                 {
                     button: ActionButton.PRIMARY,
                     showFeedback: true,
@@ -77,10 +88,10 @@ export class Sword extends Entity {
         this.pistol.getComponent(Transform).position = new Vector3(16, 1.5, 16)
         this.pistol.getComponent(Transform).scale = new Vector3(1.5, 1.5, 1.5)
         this.pistol.addComponent(new utils.KeepRotatingComponent(Quaternion.Euler(15, 90, 0)))
-        this.pistol.addComponent(
+        this.pistolBase.addComponent(
             new OnPointerDown(() => {
-                    this.takePistol()
-                },
+                this.takePistol()
+            },
                 {
                     button: ActionButton.PRIMARY,
                     showFeedback: true,
@@ -104,7 +115,8 @@ export class Sword extends Entity {
     }
 
     public pistolKill() {
-        log('pistol KILL')
+        this.pistolSystem.shoot()
+        log("FIRE !!!!!")
     }
 
     take() {
@@ -150,7 +162,7 @@ export class Sword extends Entity {
     currentColor = 0
 
     changeColor(color = -1) {
-        if(color < 0) {
+        if (color < 0) {
             this.currentColor += 1
         } else {
             this.currentColor = color
@@ -181,7 +193,7 @@ export class SaberSystem implements ISystem {
     private sourceStart: AudioSource
     private sourceSlow: AudioSource
     private sourcesFast
-    private lastRotation:Quaternion = null
+    private lastRotation: Quaternion = null
     private timerSlowPlaying = 0;
     private timerFastPlaying = 0;
     private timerRayCasting: number = 0;
@@ -343,5 +355,37 @@ export class SaberSystem implements ISystem {
             this.isFastPlaying = false
         }
         this.lastRotation = this.sword.swordRotation.clone()
+    }
+}
+
+export class PistolSystem implements ISystem {
+    private fire: Entity
+    private dt: number = 0
+    private isLive: boolean = false
+    public constructor(fire: Entity) { 
+        this.fire = fire
+    }
+
+    public shoot()
+    {
+        this.fire.getComponent(Transform).position = new Vector3(0,0,0)
+        this.isLive = true
+    }
+
+    update(dt: number) {
+        if(this.isLive)
+        {
+            this.fire.getComponent(Transform).scale.x = 7
+            this.fire.getComponent(Transform).translate(Vector3.Right().scale(1.5))
+            this.dt += dt
+        }
+
+        if(this.dt>0.5)
+        {
+            this.isLive = false
+            this.fire.getComponent(Transform).position = new Vector3(0,0,0)
+            this.fire.getComponent(Transform).scale.x = 1
+            this.dt = 0
+        }
     }
 }

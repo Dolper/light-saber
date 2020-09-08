@@ -19,6 +19,8 @@ export class PlayerUI {
     private menuBtn: UIImage
     private closeBtn: UIImage
     private handsBtn: UIImage
+    private privacyBtn: UIImage
+    private discordBtn: UIImage
     private isOpenedMenu: boolean = false
     private uiUrl: UIText;
     private isCanChangeHands = false
@@ -44,40 +46,59 @@ export class PlayerUI {
         this.uiBackMenu.visible = false
 
         this.closeBtn = new UIImage(this.canvas, new Texture("uiClose.png"))
-        this.closeBtn.width = "180"
-        this.closeBtn.height = "45"
-        this.closeBtn.sourceWidth = 233
-        this.closeBtn.sourceHeight = 59
+        this.closeBtn.width = "160"
+        this.closeBtn.height = "40"
+        this.closeBtn.sourceWidth = 220
+        this.closeBtn.sourceHeight = 51
         this.closeBtn.positionY = 10
         this.closeBtn.positionX = 0
         this.closeBtn.vAlign = "bottom"
         this.closeBtn.hAlign = "center"
         this.closeBtn.visible = false
         this.closeBtn.onClick = new OnClick(() => {
-            this.isOpenedMenu = !this.isOpenedMenu
-            this.uiBackMenu.visible = this.isOpenedMenu
-            this.menuBtn.visible = !this.isOpenedMenu
-            this.closeBtn.visible = this.isOpenedMenu
-
-            this.handsBtn.visible = !this.handsBtn.visible
+            this.closeMenu()
         })
 
         this.menuBtn = new UIImage(this.canvas, new Texture("menuBtn.png"))
-        this.menuBtn.width = "180"
-        this.menuBtn.height = "45"
-        this.menuBtn.sourceWidth = 233
-        this.menuBtn.sourceHeight = 59
+        this.menuBtn.width = "160"
+        this.menuBtn.height = "40"
+        this.menuBtn.sourceWidth = 220
+        this.menuBtn.sourceHeight = 51
         this.menuBtn.positionY = 10
         this.menuBtn.positionX = 0
         this.menuBtn.vAlign = "bottom"
         this.menuBtn.hAlign = "center"
         this.menuBtn.visible = true
         this.menuBtn.onClick = new OnClick(() => {
-            this.isOpenedMenu = !this.isOpenedMenu
-            this.uiBackMenu.visible = this.isOpenedMenu
-            this.closeBtn.visible = this.isOpenedMenu
-            this.menuBtn.visible = !this.isOpenedMenu
-            this.handsBtn.visible = !this.handsBtn.visible
+            this.closeMenu()
+        })
+
+        this.discordBtn = new UIImage(this.canvas, new Texture("discordBtn.png"))
+        this.discordBtn.width = "99"
+        this.discordBtn.height = "99"
+        this.discordBtn.sourceWidth = 99
+        this.discordBtn.sourceHeight = 99
+        this.discordBtn.positionY = 95
+        this.discordBtn.positionX = 280
+        this.discordBtn.vAlign = "bottom"
+        this.discordBtn.hAlign = "center"
+        this.discordBtn.visible = false
+        this.discordBtn.onClick = new OnClick(() => {
+            openExternalURL("https://discord.gg/J4ASyB6")
+        })
+
+        this.privacyBtn = new UIImage(this.canvas, new Texture("privacyBtn.png"))
+        this.privacyBtn.width = "200"
+        this.privacyBtn.height = "50"
+        this.privacyBtn.sourceWidth = 245
+        this.privacyBtn.sourceHeight = 71
+        this.privacyBtn.positionY = 90
+        this.privacyBtn.positionX = 90
+        this.privacyBtn.vAlign = "bottom"
+        this.privacyBtn.hAlign = "center"
+        this.privacyBtn.visible = false
+        this.privacyBtn.onClick = new OnClick(() => {
+            openExternalURL("http://blog.dapp-craft.com/star-mars-prv")
         })
 
         this.handsBtn = new UIImage(this.canvas, new Texture("handsBtn.png"))
@@ -85,8 +106,8 @@ export class PlayerUI {
         this.handsBtn.height = "50"
         this.handsBtn.sourceWidth = 245
         this.handsBtn.sourceHeight = 71
-        this.handsBtn.positionY = 110
-        this.handsBtn.positionX = 0
+        this.handsBtn.positionY = 140
+        this.handsBtn.positionX = 90
         this.handsBtn.vAlign = "bottom"
         this.handsBtn.hAlign = "center"
         this.handsBtn.visible = false
@@ -240,7 +261,7 @@ export class PlayerUI {
         log("PLAY AGAIN")
     }
 
-    hideQR(visible:boolean) {
+    hideQR(visible: boolean) {
         this.qrPopup.visible = this.uiPin.visible = this.uiUrl.visible = visible
     }
 
@@ -252,10 +273,12 @@ export class PlayerUI {
 
     closeMenu() {
         this.isOpenedMenu = !this.isOpenedMenu
-        this.uiBackMenu.visible = this.isOpenedMenu
-        this.closeBtn.visible = this.isOpenedMenu
-        this.menuBtn.visible = !this.isOpenedMenu
+        this.uiBackMenu.visible = !this.uiBackMenu.visible
+        this.menuBtn.visible = !this.menuBtn.visible
+        this.closeBtn.visible = !this.closeBtn.visible
         this.handsBtn.visible = !this.handsBtn.visible
+        this.privacyBtn.visible = !this.privacyBtn.visible
+        this.discordBtn.visible = !this.discordBtn.visible
     }
 }
 
