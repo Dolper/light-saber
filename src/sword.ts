@@ -20,6 +20,7 @@ export class Sword extends Entity {
     takenPistol: boolean = false;
     public isLaserOn = false
     isStartingMoveLaser: boolean = false;
+    isStartingMoveLaserSound: boolean = false;
     private pistolSystem: PistolSystem
 
     constructor(takeHandler) {
@@ -139,6 +140,7 @@ export class Sword extends Entity {
     switch() {
         // this.isLaserOn = !this.isLaserOn
         this.isStartingMoveLaser = true
+        this.isStartingMoveLaserSound = true
     }
 
     public changeHands(change = true) {
@@ -180,7 +182,6 @@ export class SaberSystem implements ISystem {
     private swordBase: Entity
     private sword: Sword
     private swordLight: Entity
-    private isMoveLaserComplete = false
     private isSlowPlaying = false
     private isFastPlaying = false
     private clipStart: AudioClip
@@ -298,7 +299,6 @@ export class SaberSystem implements ISystem {
         }
 
         if (this.sword.isStartingMoveLaser) {
-            this.isMoveLaserComplete = false
             if (this.sword.isLaserOn) {
                 if (this.swordLight.getComponent(Transform).scale.y > 0.21)
                     this.swordLight.getComponent(Transform).scale.y -= dt
@@ -317,10 +317,10 @@ export class SaberSystem implements ISystem {
                 }
             }
         }
-        if (!this.isMoveLaserComplete && this.sword.isStartingMoveLaser) {
+        if (this.sword.isStartingMoveLaserSound) {
             this.swordBase.addComponentOrReplace(this.sourceStart)
             this.sourceStart.playOnce()
-            this.isMoveLaserComplete = true
+            this.sword.isStartingMoveLaserSound = false
         }
         // if (this.timerSlowPlaying > 4.5) {
         //     if (!this.isSlowPlaying) {
@@ -337,8 +337,9 @@ export class SaberSystem implements ISystem {
             if (this.lastRotation != null) {
                 const diff = Quaternion.Angle(this.sword.swordRotation, this.lastRotation)
                 // log('sword move',diff)
-                if (diff > 5 && !this.sword.isLaserOn) {
+                if (diff > 0.15 && !this.sword.isLaserOn) {
                     this.sword.isStartingMoveLaser = true
+                    this.sword.isStartingMoveLaserSound = true
                     // this.isSlowPlaying = false
                 }
                 if (this.timerFastPlaying > 2 && !this.isFastPlaying && diff > 3) {
