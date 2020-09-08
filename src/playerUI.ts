@@ -1,4 +1,6 @@
 import { LevelContoller } from "./LevelCotroller"
+import * as ui from '../node_modules/@dcl/ui-utils/index'
+import { PromptStyles, ButtonStyles } from "../node_modules/@dcl/ui-utils/utils/types"
 
 export class PlayerUI {
     private uiPlayAgain: UIImage
@@ -206,7 +208,7 @@ export class PlayerUI {
         this.uiGameOver.height = "117"
         this.uiGameOver.sourceWidth = 462
         this.uiGameOver.sourceHeight = 117
-        this.uiGameOver.positionY = 400
+        this.uiGameOver.positionY = 550
         this.uiGameOver.vAlign = "bottom"
         this.uiGameOver.visible = false
 
@@ -247,10 +249,49 @@ export class PlayerUI {
         this.isCountDown = true
         this.dt = 0
     }
+
+    public showHighscore(data) {
+        let NameColumn = 'Name\n'
+        let ScoreColumn = 'Score\n'
+        data.forEach(s => {
+            NameColumn += s.userName + '\n'
+            ScoreColumn += s.score + '\n'
+        })
+        let prompt = new ui.CustomPrompt(PromptStyles.LIGHTLARGE,400, 400)
+        prompt.canvas = this.canvas
+        prompt.addText('Highscore', 0, 150, Color4.Red(), 30)
+        prompt.addText(NameColumn, -100, -100).text.hTextAlign = 'left'
+        prompt.addText(ScoreColumn, 100, -100).text.hTextAlign = 'right'
+
+        prompt.addButton(
+            'Again',
+            0,
+            -200,
+            () => {
+                log('Try again')
+                this.reset()
+                prompt.close()
+            },
+            ButtonStyles.E
+        )
+        //
+        // prompt.addButton(
+        //     'Go Miner Zone',
+        //     100,
+        //     -100,
+        //     () => {
+        //         log('No')
+        //         prompt.close()
+        //     },
+        //     ButtonStyles.F
+        // )
+    }
+
     public kill() {
-        this.uiBackGround.visible = true
+        // this.showHighscore([])
+        // this.uiBackGround.visible = true
         this.uiGameOver.visible = true
-        this.uiPlayAgain.visible = true
+        // this.uiPlayAgain.visible = true
     }
 
     private reset() {

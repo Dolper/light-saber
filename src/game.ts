@@ -3,9 +3,12 @@ import {Tools} from "./tools"
 import {LevelSystem} from "./LevelCotroller"
 import {Sword} from "./sword"
 import {getUserData, UserData} from '@decentraland/Identity'
+// @ts-ignore
 import {getCurrentRealm} from '@decentraland/EnvironmentAPI'
 
-const camera = Camera.instance
+const serverUrl = "wss://s.dapp-craft.com/scene/"
+// const serverUrl = "ws://127.0.0.1:8080/scene/"
+
 let sb = new Skybox()
 
 let d = Tools.getRandomInt(0, 10)
@@ -51,7 +54,7 @@ function hashCode(str) {
 }
 
 function connectSocket(pin) {
-    const socket = new WebSocket("wss://s.dapp-craft.com/scene/" + pin);
+    const socket = new WebSocket(serverUrl + pin);
 
     socket.onmessage = function (event) {
         try {
@@ -76,6 +79,9 @@ function connectSocket(pin) {
                 } else if (msg.cmd == 'changeColor') {
                     sword.changeColor()
                 }
+            } else if (msg.type == 'scoreTable') {
+                levelSystem.showHighscore(msg.scoreTable)
+                log('scoreTable', msg)
             }
         } catch (error) {
             log(error);

@@ -1,13 +1,15 @@
 {
   "display": {
-    "title": "interactive-text",
+    "title": "Star Mars by Dapp-Craft",
+    "description": "Star Mars for Game Jam Event",
+    "navmapThumbnail": "https://dcl-dapp-craft.storage.googleapis.com/logo.jpg",
     "favicon": "favicon_asset"
   },
   "contact": {
-    "name": "author-name",
-    "email": ""
+    "name": "Dapp-Craft",
+    "email": "decenterlandlord@gmail.com"
   },
-  "owner": "",
+  "owner": "Dapp-Craft",
   "scene": {
     "parcels": [
       "-91,-38",

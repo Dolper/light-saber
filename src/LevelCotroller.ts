@@ -181,4 +181,8 @@ export class LevelSystem implements ISystem {
         this.levelController.serverSendHandler = param
 
     }
+
+    showHighscore(scoreTable: any) {
+        this.levelController.playerUI.showHighscore(scoreTable)
+    }
 }
