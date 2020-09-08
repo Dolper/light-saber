@@ -35,19 +35,19 @@ export class LevelContoller {
     }
 
     private droneFactoryHandler(event: any) {
-        log('LevelContoller', event.event)
-        if (event.event == 'kill') {
-            this.droneKills += 1
-            let addScore = 10
-            if (event.weapon == 'sword') {
-                addScore = 25
-            }
-            if (event.weapon == 'pistol') {
-                this.pistolKillHandeler()
-            }
-            this.score.increase(addScore)
-        } else if (event.event == 'smashPlayer') {
-            if (!this.gameOver) {
+        if (!this.gameOver) {
+            log('LevelContoller', event.event)
+            if (event.event == 'kill') {
+                this.droneKills += 1
+                let addScore = 10
+                if (event.weapon == 'sword') {
+                    addScore = 25
+                }
+                if (event.weapon == 'pistol') {
+                    this.pistolKillHandeler()
+                }
+                this.score.increase(addScore)
+            } else if (event.event == 'smashPlayer') {
                 this.health.decrease(event.drone.attack)
                 this.playerUI.damage()
                 if (this.health.read() <= 0) {
@@ -63,6 +63,7 @@ export class LevelContoller {
                         kills: this.droneKills
                     })
                 }
+
             }
         }
     }
