@@ -15,7 +15,7 @@ export class Sword extends Entity {
     private takeHandler
     private pistol: Entity = null;
     public taken: boolean = false;
-    private takenPistol: boolean = false;
+    takenPistol: boolean = false;
     public isLaserOn = false
     isStartingMoveLaser: boolean = false;
 
@@ -63,7 +63,7 @@ export class Sword extends Entity {
             position: new Vector3(-0.001, 0.019, 0),
             scale: new Vector3(1, 0.03, 1)
         }))
-        this.swordLight.addComponent(new GLTFShape("swordLight.glb"))
+        this.changeColor(0)
 
         engine.addEntity(this)
         this.swordBase.setParent(this)
@@ -103,6 +103,10 @@ export class Sword extends Entity {
         this.takeHandler('pistol')
     }
 
+    public pistolKill() {
+        log('pistol KILL')
+    }
+
     take() {
         this.taken = true
         this.changeHands(false)
@@ -136,10 +140,30 @@ export class Sword extends Entity {
             this.pistol.getComponent(Transform).position.x = -x
         }
     }
+
+    colors = [
+        new GLTFShape("swordLight.glb"),
+        new GLTFShape("swordLightG.glb"),
+        new GLTFShape("swordLightR.glb"),
+        new GLTFShape("swordLightM.glb")
+    ]
+    currentColor = 0
+
+    changeColor(color = -1) {
+        if(color < 0) {
+            this.currentColor += 1
+        } else {
+            this.currentColor = color
+        }
+        if (this.currentColor >= this.colors.length) {
+            this.currentColor = 0
+        }
+        log('change color', this.currentColor)
+        this.swordLight.addComponentOrReplace(this.colors[this.currentColor])
+    }
 }
 
 export class SaberSystem implements ISystem {
-    private dt = 0
     private timer = 0
     private swordBase: Entity
     private sword: Sword
@@ -251,7 +275,6 @@ export class SaberSystem implements ISystem {
     }
 
     update(dt: number) {
-        this.dt += dt
         this.timerRayCasting += dt
         this.timer += dt
         this.timerSlowPlaying += dt
@@ -263,6 +286,7 @@ export class SaberSystem implements ISystem {
         }
 
         if (this.sword.isStartingMoveLaser) {
+            this.isMoveLaserComplete = false
             if (this.sword.isLaserOn) {
                 if (this.swordLight.getComponent(Transform).scale.y > 0.21)
                     this.swordLight.getComponent(Transform).scale.y -= dt
@@ -276,18 +300,15 @@ export class SaberSystem implements ISystem {
                     this.swordLight.getComponent(Transform).scale.y += dt
                 else {
                     this.sword.isStartingMoveLaser = false
+                    this.swordLight.getComponent(Transform).scale.y = 1
                     this.sword.isLaserOn = true
                 }
             }
         }
-        if (this.dt > 3) {
-            if (!this.isMoveLaserComplete && this.sword.isStartingMoveLaser) {
-                this.sourceStart.playing = true
-                this.sourceStart.loop = false
-                this.swordBase.addComponentOrReplace(this.sourceStart)
-                this.isMoveLaserComplete = true
-            }
-            this.dt = 0
+        if (!this.isMoveLaserComplete && this.sword.isStartingMoveLaser) {
+            this.swordBase.addComponentOrReplace(this.sourceStart)
+            this.sourceStart.playOnce()
+            this.isMoveLaserComplete = true
         }
         // if (this.timerSlowPlaying > 4.5) {
         //     if (!this.isSlowPlaying) {
@@ -311,9 +332,9 @@ export class SaberSystem implements ISystem {
                 if (this.timerFastPlaying > 2 && !this.isFastPlaying && diff > 3) {
                     // log('fast', this.timerFastPlaying, diff)
                     let rnd = Tools.getRandomInt(0, 3)
-                    this.sourcesFast[rnd].playOnce()
                     this.sourcesFast[rnd].volume = 0.5
                     this.swordBase.addComponentOrReplace(this.sourcesFast[rnd])
+                    this.sourcesFast[rnd].playOnce()
                     this.isFastPlaying = true
                     this.timerFastPlaying = 0
                 }

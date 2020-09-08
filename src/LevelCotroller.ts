@@ -22,8 +22,12 @@ export class LevelContoller {
     health = new ui.UIBar(1, -30, 60, Color4.Red(), BarStyles.ROUNDSILVER, 1)
     healthLabel = new ui.CornerLabel('Health:', -170, 55)
     changeHandsHandeler: () => void;
+    pistolKillHandeler: () => void;
 
     private gameStarted = false
+    serverSendHandler: (data) => void;
+
+    droneKills = 0
 
     constructor() {
         this.playerUI = new PlayerUI(this)
@@ -33,19 +37,31 @@ export class LevelContoller {
     private droneFactoryHandler(event: any) {
         log('LevelContoller', event.event)
         if (event.event == 'kill') {
+            this.droneKills += 1
             let addScore = 10
             if (event.weapon == 'sword') {
                 addScore = 25
             }
+            if (event.weapon == 'pistol') {
+                this.pistolKillHandeler()
+            }
             this.score.increase(addScore)
         } else if (event.event == 'smashPlayer') {
-            this.health.decrease(event.drone.attack)
-            this.playerUI.damage()
-            if (this.health.read() <= 0) {
-                this.playerUI.kill()
-                this.gameOver = true
-                if (this.skyBox != null) {
-                    this.skyBox.setBounds(false)
+            if (!this.gameOver) {
+                this.health.decrease(event.drone.attack)
+                this.playerUI.damage()
+                if (this.health.read() <= 0) {
+                    this.playerUI.kill()
+                    this.gameOver = true
+                    if (this.skyBox != null) {
+                        this.skyBox.setBounds(false)
+                    }
+                    this.serverSendHandler({
+                        type: 'score',
+                        level: this.level.read(),
+                        score: this.score.read(),
+                        kills: this.droneKills
+                    })
                 }
             }
         }
@@ -93,6 +109,7 @@ export class LevelContoller {
         this.level.set(0)
         this.factory.Reset()
         this.gameOver = false
+        this.droneKills = 0
         this.nextLevel()
         if (this.skyBox != null) {
             this.skyBox.setBounds(true)
@@ -153,5 +170,14 @@ export class LevelSystem implements ISystem {
 
     public setSkyBox(skyBox:Skybox) {
         this.levelController.skyBox = skyBox
+    }
+
+    setPistolKillHandeler(param: () => void) {
+        this.levelController.pistolKillHandeler = param
+    }
+
+    setServerSendHandler(param: (data) => void) {
+        this.levelController.serverSendHandler = param
+
     }
 }

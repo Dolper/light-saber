@@ -26,6 +26,17 @@ levelSystem.setChangeHandsHandeler(() => {
     sword.changeHands()
 })
 
+levelSystem.setPistolKillHandeler(() => {
+    sword.pistolKill()
+})
+
+const input = Input.instance
+input.subscribe("BUTTON_DOWN", ActionButton.POINTER, false, (e) => {
+    if (sword.takenPistol) {
+        sword.pistolKill()
+    }
+})
+
 let userData = null
 
 function hashCode(str) {
@@ -62,6 +73,8 @@ function connectSocket(pin) {
                     sword.switch()
                 } else if (msg.cmd == 'changeHands') {
                     sword.changeHands()
+                } else if (msg.cmd == 'changeColor') {
+                    sword.changeColor()
                 }
             }
         } catch (error) {
@@ -76,6 +89,10 @@ function connectSocket(pin) {
             data: userData,
             pin: pin
         }))
+
+        levelSystem.setServerSendHandler((data) => {
+            socket.send(JSON.stringify(data))
+        })
     }
 }
 
