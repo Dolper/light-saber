@@ -34,13 +34,6 @@ export class Skybox {
         logo.addComponent(new Billboard())
         engine.addEntity(logo)
 
-        let clip = new AudioClip("sfx/sound.mp3")
-        let source = new AudioSource(clip)
-        source.playing = true
-        source.loop = true
-        this.light.addComponentOrReplace(source)
-
-
         let skyboxEntity = new Entity()
         skyboxEntity.addComponent(new GLTFShape("models/skybox.glb"))
         skyboxEntity.addComponent(new Transform({
