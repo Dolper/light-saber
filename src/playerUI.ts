@@ -149,9 +149,9 @@ export class PlayerUI {
         this.uiUrl.height = 30
         this.uiUrl.vAlign = "bottom"
         this.uiUrl.hAlign = "left"
-        this.uiUrl.positionX = 90
-        this.uiUrl.positionY = 300
-        this.uiUrl.value = 's.dapp-craft.com'
+        this.uiUrl.positionX = 80
+        this.uiUrl.positionY = 452
+        this.uiUrl.value = 'https://s.dapp-craft.com'
         this.uiUrl.visible = false
     }
 
