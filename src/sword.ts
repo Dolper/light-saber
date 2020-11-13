@@ -105,11 +105,11 @@ export class Sword extends Entity {
     takePistol() {
         this.takenPistol = true
         this.changeHands(false)
-        this.pistol.getComponent(Transform).position.y = 0.55
+        this.pistol.getComponent(Transform).position.y = -0.55
         this.pistol.getComponent(Transform).position.z = 0.95
         this.pistol.getComponent(Transform).rotation = Quaternion.Euler(0, 270, 0)
         this.pistol.getComponent(Transform).scale = new Vector3(0.8, 0.8, 0.8)
-        this.pistol.setParent(Attachable.PLAYER)
+        this.pistol.setParent(Attachable.FIRST_PERSON_CAMERA)
         this.pistol.getComponent(utils.KeepRotatingComponent).stop()
         this.pistol.removeComponent(utils.KeepRotatingComponent)
         this.takeHandler('pistol')
@@ -123,10 +123,10 @@ export class Sword extends Entity {
     take() {
         this.taken = true
         this.changeHands(false)
-        this.getComponent(Transform).position.y = 0.5
+        this.getComponent(Transform).position.y = -0.5
         this.getComponent(Transform).position.z = 0.9
         this.getComponent(Transform).scale = new Vector3(1, 1, 1)
-        this.setParent(Attachable.PLAYER)
+        this.setParent(Attachable.FIRST_PERSON_CAMERA)
         this.getComponent(utils.KeepRotatingComponent).stop()
         this.removeComponent(utils.KeepRotatingComponent)
         this.swordBase.removeComponent(OnPointerDown)
