@@ -2,6 +2,7 @@ import utils from "../node_modules/decentraland-ecs-utils/index"
 
 import {PathData} from "./pathData"
 import {PatrolPath} from "./pathData"
+import { Tools } from "./tools"
 
 const invisibleSphere = new SphereShape()
 invisibleSphere.visible = false
@@ -29,7 +30,8 @@ export class Drone extends Entity {
         this.PatrolPath = new PatrolPath(this, this.path, speed)
 
         engine.addSystem(this.PatrolPath)
-        this.addComponent(new GLTFShape("models/drone.glb"))
+        let r = Tools.getRandomInt(0,3)
+        this.addComponent(new GLTFShape("models/card"+r+".glb"))
 
         if (needAddShootComponent) this.addShootComponent()
         this.getComponent(GLTFShape).withCollisions = false
