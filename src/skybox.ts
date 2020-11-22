@@ -23,7 +23,7 @@ export class Skybox {
 
 
         let logo = new Entity() // Billoard 
-        logo.addComponent(new GLTFShape("models/logo.glb"))
+        logo.addComponent(new GLTFShape("models/logoAW.glb"))
         logo.addComponent(
             new Transform({
                 position: new Vector3(16, 16, 16),
